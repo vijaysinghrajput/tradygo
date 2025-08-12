@@ -34,6 +34,7 @@ export function generateMetadata(config: SEOConfig = {}): Metadata {
   const imageUrl = ogImage ? `${SITE_URL}${ogImage}` : `${SITE_URL}/og-default.jpg`;
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: fullTitle,
     description,
     keywords: keywords.join(', '),
