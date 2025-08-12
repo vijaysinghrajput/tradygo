@@ -157,7 +157,20 @@ If migrations didn't run automatically, you can trigger them manually:
 
 For advanced deployment and local development with Railway CLI:
 
-### Install Railway CLI
+### Quick Setup (Recommended)
+
+```bash
+# Run the automated setup script
+./railway-setup.sh
+```
+
+This script will:
+- Install Railway CLI if not present
+- Guide you through authentication
+- Link to your Tradygo project
+- Provide usage instructions
+
+### Manual Setup
 
 ```bash
 # Install Railway CLI
@@ -170,12 +183,17 @@ curl -fsSL https://railway.app/install.sh | sh
 ### Authenticate with Token
 
 ```bash
-# Login using your token
-railway login --browserless
-# Enter token: b041c494-cddf-4382-a719-c1ddf7da8c7a
+# Method 1: Browser-based login (Recommended)
+railway login
+# This will open a browser window for authentication
 
-# Link to your project
-railway link eb52c2a2-412b-41fb-b068-c3e0f00640f7
+# Method 2: Token-based login
+export RAILWAY_TOKEN=b041c494-cddf-4382-a719-c1ddf7da8c7a
+railway login
+
+# Link to your project (interactive selection)
+railway link
+# Select your project from the list: eb52c2a2-412b-41fb-b068-c3e0f00640f7
 ```
 
 ### CLI Commands
