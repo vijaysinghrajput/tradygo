@@ -7,6 +7,16 @@ settings:
 importers:
 
   .:
+    dependencies:
+      autoprefixer:
+        specifier: ^10.4.0
+        version: 10.4.21(postcss@8.5.6)
+      postcss:
+        specifier: ^8.4.0
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.0
+        version: 3.4.17(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2))
     devDependencies:
       '@tradygo/config':
         specifier: workspace:*
@@ -448,7 +458,7 @@ importers:
         version: 7.28.2
       '@react-native/eslint-config':
         specifier: ^0.72.2
-        version: 0.72.2(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10))(prettier@2.8.8)(typescript@4.8.4)
+        version: 0.72.2(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10)(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2)))(prettier@2.8.8)(typescript@4.8.4)
       '@react-native/metro-config':
         specifier: ^0.72.11
         version: 0.72.12(@babel/core@7.28.0)
@@ -576,6 +586,9 @@ importers:
       '@tradygo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      autoprefixer:
+        specifier: ^10.4.0
+        version: 10.4.21(postcss@8.4.31)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -594,6 +607,9 @@ importers:
       next:
         specifier: ^14.2.0
         version: 14.2.31(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
+      postcss:
+        specifier: ^8.4.0
+        version: 8.4.31
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -612,6 +628,9 @@ importers:
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.6.0
+      tailwindcss:
+        specifier: ^3.4.0
+        version: 3.4.17(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2))
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2)))
@@ -634,21 +653,12 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.0
         version: 18.3.7(@types/react@18.3.23)
-      autoprefixer:
-        specifier: ^10.4.0
-        version: 10.4.21(postcss@8.4.31)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
       eslint-config-next:
         specifier: ^14.2.0
         version: 14.2.31(eslint@8.57.1)(typescript@5.9.2)
-      postcss:
-        specifier: ^8.4.0
-        version: 8.4.31
-      tailwindcss:
-        specifier: ^3.4.0
-        version: 3.4.17(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2))
       typescript:
         specifier: ^5.3.0
         version: 5.9.2
@@ -12893,7 +12903,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@react-native/eslint-config@0.72.2(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10))(prettier@2.8.8)(typescript@4.8.4)':
+  '@react-native/eslint-config@0.72.2(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10)(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2)))(prettier@2.8.8)(typescript@4.8.4)':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/eslint-parser': 7.28.0(@babel/core@7.28.0)(eslint@8.57.1)
@@ -12904,7 +12914,7 @@ snapshots:
       eslint-config-prettier: 8.10.2(eslint@8.57.1)
       eslint-plugin-eslint-comments: 3.2.0(eslint@8.57.1)
       eslint-plugin-ft-flow: 2.0.3(@babel/eslint-parser@7.28.0(@babel/core@7.28.0)(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-jest: 26.9.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10))(typescript@4.8.4)
+      eslint-plugin-jest: 26.9.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10)(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2)))(typescript@4.8.4)
       eslint-plugin-prettier: 4.2.5(eslint-config-prettier@8.10.2(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -15504,7 +15514,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-jest@26.9.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10))(typescript@4.8.4):
+  eslint-plugin-jest@26.9.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(typescript@4.8.4))(eslint@8.57.1)(jest@29.7.0(@types/node@20.19.10)(ts-node@10.9.2(@types/node@20.19.10)(typescript@5.9.2)))(typescript@4.8.4):
     dependencies:
       '@typescript-eslint/utils': 5.62.0(eslint@8.57.1)(typescript@4.8.4)
       eslint: 8.57.1
