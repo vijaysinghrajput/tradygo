@@ -2,11 +2,17 @@
 
 This guide will help you deploy the Tradygo multi-vendor e-commerce platform on Railway.
 
+## Railway Project Information
+
+- **Project ID**: `eb52c2a2-412b-41fb-b068-c3e0f00640f7`
+- **Project URL**: https://railway.app/project/eb52c2a2-412b-41fb-b068-c3e0f00640f7
+
 ## Prerequisites
 
 - Railway account (https://railway.app)
 - GitHub repository with your Tradygo code
 - Basic understanding of environment variables
+- Access to the Railway project above
 
 ## Architecture Overview
 
@@ -19,12 +25,14 @@ The Tradygo platform consists of:
 
 ## Railway Deployment Steps
 
-### 1. Create a New Railway Project
+### 1. Access Your Railway Project
 
 1. Go to [Railway](https://railway.app) and sign in
-2. Click "New Project"
-3. Select "Deploy from GitHub repo"
-4. Choose your Tradygo repository
+2. Navigate to your project: https://railway.app/project/eb52c2a2-412b-41fb-b068-c3e0f00640f7
+3. Or create a new project if needed:
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your Tradygo repository
 
 ### 2. Add PostgreSQL Database
 
