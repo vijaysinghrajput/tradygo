@@ -1,0 +1,10 @@
+# Ignore everything except what's needed for the build
+*
+!src/
+!public/
+!package.json
+!next.config.js
+!postcss.config.js
+!tailwind.config.js
+!tsconfig.json
+!vercel.json
