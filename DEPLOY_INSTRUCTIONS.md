@@ -6,6 +6,9 @@ This guide will help you deploy the Tradygo multi-vendor e-commerce platform on 
 
 - **Project ID**: `eb52c2a2-412b-41fb-b068-c3e0f00640f7`
 - **Project URL**: https://railway.app/project/eb52c2a2-412b-41fb-b068-c3e0f00640f7
+- **API Token**: `b041c494-cddf-4382-a719-c1ddf7da8c7a` (Production Environment)
+
+> ⚠️ **Security Note**: Keep your Railway token secure. Anyone with this token has access to your project environment variables and deployment controls.
 
 ## Prerequisites
 
@@ -149,6 +152,50 @@ If migrations didn't run automatically, you can trigger them manually:
 - Railway automatically scales based on traffic
 - For high-traffic applications, consider upgrading to Railway Pro
 - Monitor resource usage and adjust as needed
+
+## Railway CLI Setup (Optional)
+
+For advanced deployment and local development with Railway CLI:
+
+### Install Railway CLI
+
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Or using curl
+curl -fsSL https://railway.app/install.sh | sh
+```
+
+### Authenticate with Token
+
+```bash
+# Login using your token
+railway login --browserless
+# Enter token: b041c494-cddf-4382-a719-c1ddf7da8c7a
+
+# Link to your project
+railway link eb52c2a2-412b-41fb-b068-c3e0f00640f7
+```
+
+### CLI Commands
+
+```bash
+# Deploy from local
+railway up
+
+# View logs
+railway logs
+
+# Run commands in Railway environment
+railway run npm start
+
+# Manage environment variables
+railway variables
+
+# Open project in browser
+railway open
+```
 
 ## Troubleshooting
 

@@ -48,8 +48,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Deploy to Railway
+    - name: Install Railway CLI
       run: |
-        echo "🚀 Deployment triggered to Railway"
-        echo "Railway will automatically deploy from this GitHub push"
-        echo "Monitor deployment status at: https://railway.app"
+        npm install -g @railway/cli
+    
+    - name: Deploy to Railway
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        echo "🚀 Deploying to Railway..."
+        railway login --browserless
+        railway link eb52c2a2-412b-41fb-b068-c3e0f00640f7
+        railway up --detach
+        echo "✅ Deployment completed!"
+        echo "Monitor status at: https://railway.app/project/eb52c2a2-412b-41fb-b068-c3e0f00640f7"
