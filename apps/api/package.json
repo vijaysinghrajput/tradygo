@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "postinstall": "cd ../.. && pnpm exec prisma generate --schema=./apps/api/prisma/schema.prisma",
+
     "build": "cd ../.. && pnpm exec prisma generate --schema=./apps/api/prisma/schema.prisma && cd apps/api && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
