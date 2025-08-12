@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { NextResponse } from 'next/server';
 import { User, AuthTokens, isAdminRole } from './types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in/api/v1';
 
 /**
  * Get tokens from httpOnly cookies

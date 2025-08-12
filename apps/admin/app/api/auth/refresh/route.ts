@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { setTokensAsCookies } from '../../../../lib/auth/server';
 import { RefreshResponse } from '../../../../lib/auth/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3005';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in/api/v1';
 
 export async function POST(request: NextRequest) {
   try {

@@ -14,6 +14,7 @@ Missing `NEXT_PUBLIC_API_URL` environment variable in Vercel deployments.
 
 ```env
 NEXT_PUBLIC_API_URL=https://api.tradygo.in/api/v1
+NEXT_PUBLIC_API_BASE=https://api.tradygo.in
 NEXT_PUBLIC_APP_NAME=TradyGo Admin
 NEXT_PUBLIC_APP_TYPE=admin
 NODE_ENV=production
