@@ -1,0 +1,15 @@
+{
+  "extends": "@tradygo/config/react-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": ["src/**/*", "stories/**/*"],
+  "exclude": ["dist", "build", "node_modules"]
+}

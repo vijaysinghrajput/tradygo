@@ -1,0 +1,28 @@
+FROM node:20-slim AS base
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+
+FROM base AS deps
+RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
+COPY repo/pnpm-lock.yaml repo/package.json ./
+RUN pnpm fetch
+COPY repo ./
+RUN pnpm -r i --offline --frozen-lockfile
+
+FROM deps AS build
+WORKDIR /app
+RUN pnpm --filter @tradygo/ui build
+WORKDIR /app/apps/admin
+RUN pnpm build
+
+FROM node:20-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/apps/admin/.next/standalone ./
+COPY --from=build /app/apps/admin/.next/static ./.next/static
+COPY --from=build /app/apps/admin/public ./public
+ENV PORT=3000
+CMD ["node","server.js"]
+
+
+
