@@ -1,11 +1,22 @@
 {
-  "$schema": "https://railway.app/railway.schema.json",
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "watchPatterns": [
+      "apps/api/**"
+    ]
   },
   "deploy": {
+    "runtime": "V2",
     "numReplicas": 1,
+    "startCommand": "cd apps/api && pnpm start",
     "sleepApplication": false,
-    "restartPolicyType": "ON_FAILURE"
+    "multiRegionConfig": {
+      "asia-southeast1-eqsg3a": {
+        "numReplicas": 1
+      }
+    },
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
   }
 }
