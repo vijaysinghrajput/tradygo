@@ -1,10 +1,11 @@
 [build]
 builder = "NIXPACKS"
+watchPatterns = ["apps/api/**"]
 
 [deploy]
-startCommand = "pnpm start"
+startCommand = "cd apps/api && pnpm start"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
 
 [environments.production]
-variables = { NODE_ENV = "production" }
+variables = { NODE_ENV = "production", PORT = "3001" }

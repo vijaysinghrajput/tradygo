@@ -1,0 +1,32 @@
+# Railway Configuration for API and Database Only
+# This configuration deploys only the API service to Railway
+# Frontend apps (admin, seller, web) will be deployed to Vercel
+
+[build]
+builder = "NIXPACKS"
+watchPatterns = ["apps/api/**"]
+
+[deploy]
+startCommand = "cd apps/api && pnpm start"
+restartPolicyType = "ON_FAILURE"
+numReplicas = 1
+
+[environments.production]
+variables = { 
+  NODE_ENV = "production", 
+  PORT = "3001",
+  # Database will be provided by Railway PostgreSQL service
+  DATABASE_URL = "${{Postgres.DATABASE_URL}}"
+}
+
+# Health check configuration
+[healthcheck]
+path = "/health/healthz"
+port = 3001
+timeout = 30
+interval = 60
+
+# Resource allocation
+[resources]
+memory = 512
+cpu = 0.5
