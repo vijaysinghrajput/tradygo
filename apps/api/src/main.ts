@@ -18,11 +18,22 @@ async function bootstrap() {
 
   // CORS
   const corsOrigins = configService.get('CORS_ORIGINS', '').split(',').filter(Boolean);
+  const defaultOrigins = [
+    'https://admin.tradygo.in',
+    'https://seller.tradygo.in', 
+    'https://tradygo.in',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+  ];
+  
   app.enableCors({
-    origin: corsOrigins.length > 0 ? corsOrigins : [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
+    origin: corsOrigins.length > 0 ? [
+      ...corsOrigins,
+      /\.vercel\.app$/ // Vercel preview deployments
+    ] : [
+      ...defaultOrigins,
+      /\.vercel\.app$/ // Vercel preview deployments
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

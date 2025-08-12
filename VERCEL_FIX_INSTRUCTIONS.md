@@ -15,14 +15,7 @@ Missing `NEXT_PUBLIC_API_URL` environment variable in Vercel deployments.
 ```env
 NEXT_PUBLIC_API_URL=https://api.tradygo.in/api/v1
 NEXT_PUBLIC_API_BASE=https://api.tradygo.in
-NEXT_PUBLIC_APP_NAME=TradyGo Admin
-NEXT_PUBLIC_APP_TYPE=admin
 NODE_ENV=production
-NEXT_PUBLIC_DEMO_MODE=true
-NEXT_PUBLIC_DEMO_ADMIN_EMAIL=admin@tradygo.in
-NEXT_PUBLIC_DEMO_ADMIN_PASSWORD=Admin@12345!
-NEXT_PUBLIC_DEMO_SUPER_ADMIN_EMAIL=sa@tradygo.in
-NEXT_PUBLIC_DEMO_SUPER_ADMIN_PASSWORD=Admin@12345!
 ```
 
 3. **Redeploy** the admin app
@@ -33,12 +26,7 @@ NEXT_PUBLIC_DEMO_SUPER_ADMIN_PASSWORD=Admin@12345!
 
 ```env
 NEXT_PUBLIC_API_URL=https://api.tradygo.in/api/v1
-NEXT_PUBLIC_APP_NAME=TradyGo Seller
-NEXT_PUBLIC_APP_TYPE=seller
 NODE_ENV=production
-NEXT_PUBLIC_DEMO_MODE=true
-NEXT_PUBLIC_DEMO_SELLER_EMAIL=seller@tradygo.in
-NEXT_PUBLIC_DEMO_SELLER_PASSWORD=Seller@12345!
 ```
 
 3. **Redeploy** the seller app
@@ -49,12 +37,7 @@ NEXT_PUBLIC_DEMO_SELLER_PASSWORD=Seller@12345!
 
 ```env
 NEXT_PUBLIC_API_URL=https://api.tradygo.in/api/v1
-NEXT_PUBLIC_APP_NAME=TradyGo
-NEXT_PUBLIC_APP_TYPE=web
 NODE_ENV=production
-NEXT_PUBLIC_DEMO_MODE=true
-NEXT_PUBLIC_DEMO_USER_EMAIL=user@tradygo.in
-NEXT_PUBLIC_DEMO_USER_PASSWORD=User@12345!
 ```
 
 3. **Redeploy** the web app
