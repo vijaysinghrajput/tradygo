@@ -1,0 +1,53 @@
+FROM node:20-alpine AS base
+
+# Install OpenSSL and other required packages
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY packages ./packages
+COPY apps/api/package.json ./apps/api/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY apps/api ./apps/api
+
+# Build the application
+WORKDIR /app/apps/api
+RUN pnpm build
+
+# Production stage
+FROM node:20-alpine AS production
+
+# Install OpenSSL and runtime dependencies
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+RUN npm install -g pnpm prisma
+
+WORKDIR /app
+
+# Copy workspace files for production
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages ./packages
+COPY apps/api/package.json ./apps/api/
+
+# Install production dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy built application
+COPY --from=base /app/apps/api ./apps/api
+
+WORKDIR /app/apps/api
+
+# Generate Prisma client
+RUN prisma generate
+
+# Expose port (Railway will set PORT env var)
+EXPOSE $PORT
+
+# Railway-specific startup command
+CMD ["sh", "-c", "prisma migrate deploy && node dist/main.js"]

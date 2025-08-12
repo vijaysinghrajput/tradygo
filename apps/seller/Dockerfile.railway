@@ -1,0 +1,42 @@
+FROM node:20-alpine AS base
+RUN npm install -g pnpm
+WORKDIR /app
+
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY packages ./packages
+COPY apps/seller/package.json ./apps/seller/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY apps/seller ./apps/seller
+
+# Build the application
+WORKDIR /app/apps/seller
+RUN pnpm build
+
+# Production stage
+FROM node:20-alpine AS production
+RUN npm install -g pnpm
+WORKDIR /app
+
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages ./packages
+COPY apps/seller/package.json ./apps/seller/
+
+# Install production dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy built application
+COPY --from=base /app/apps/seller ./apps/seller
+
+WORKDIR /app/apps/seller
+
+# Expose port (Railway will set PORT env var)
+EXPOSE $PORT
+
+# Railway-specific startup command
+CMD ["pnpm", "start", "-p", "$PORT"]

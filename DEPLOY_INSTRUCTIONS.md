@@ -1,188 +1,197 @@
-# TradyGo Production Deployment Instructions
+# Tradygo Railway Deployment Guide
 
-## 🚀 Automated VPS Deployment
+This guide will help you deploy the Tradygo multi-vendor e-commerce platform on Railway.
 
-Your TradyGo deployment package is ready! Follow these steps to deploy to your VPS.
+## Prerequisites
 
-### 📦 Files Created
+- Railway account (https://railway.app)
+- GitHub repository with your Tradygo code
+- Basic understanding of environment variables
 
-- `tradygo-deploy.tar.gz` - Complete deployment package
-- `vps-deploy.sh` - Automated VPS setup script
-- `deploy/` - Production configuration files
+## Architecture Overview
 
-### 🔧 VPS Setup (Automated)
+The Tradygo platform consists of:
+- **API**: NestJS backend with Prisma ORM
+- **Admin**: Next.js admin dashboard
+- **Seller**: Next.js seller portal
+- **Web**: Next.js customer storefront
+- **Database**: PostgreSQL
 
-**Step 1: Upload Files to VPS**
+## Railway Deployment Steps
 
-```bash
-# Option A: Using SCP (if SSH keys work)
-scp tradygo-deploy.tar.gz vps-deploy.sh root@195.35.21.175:/root/
+### 1. Create a New Railway Project
 
-# Option B: Manual upload via VPS file manager
-# Upload both files to /root/ directory
+1. Go to [Railway](https://railway.app) and sign in
+2. Click "New Project"
+3. Select "Deploy from GitHub repo"
+4. Choose your Tradygo repository
+
+### 2. Add PostgreSQL Database
+
+1. In your Railway project, click "+ New"
+2. Select "Database" → "PostgreSQL"
+3. Railway will automatically create a PostgreSQL instance
+4. Note the connection details from the "Connect" tab
+
+### 3. Deploy the API Service
+
+1. Click "+ New" → "GitHub Repo"
+2. Select your repository again
+3. Set the following:
+   - **Service Name**: `tradygo-api`
+   - **Root Directory**: `/apps/api`
+   - **Build Command**: `pnpm build`
+   - **Start Command**: `pnpm start`
+
+#### API Environment Variables
+
+Add these environment variables to your API service:
+
+```env
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+NODE_ENV=production
+JWT_ACCESS_SECRET=your-super-secret-jwt-access-key
+JWT_REFRESH_SECRET=your-super-secret-jwt-refresh-key
+PORT=${{PORT}}
 ```
 
-**Step 2: Execute Deployment Script on VPS**
+### 4. Deploy Frontend Services
 
-```bash
-# SSH into your VPS
-ssh root@195.35.21.175
+Repeat the deployment process for each frontend service:
 
-# Run the automated deployment script
-chmod +x vps-deploy.sh
-./vps-deploy.sh
-```
+#### Admin Dashboard
+- **Service Name**: `tradygo-admin`
+- **Root Directory**: `/apps/admin`
+- **Environment Variables**:
+  ```env
+  NODE_ENV=production
+  NEXT_PUBLIC_API_URL=${{tradygo-api.RAILWAY_PUBLIC_DOMAIN}}
+  PORT=${{PORT}}
+  ```
 
-**Step 3: Upload Source Code**
+#### Seller Portal
+- **Service Name**: `tradygo-seller`
+- **Root Directory**: `/apps/seller`
+- **Environment Variables**:
+  ```env
+  NODE_ENV=production
+  NEXT_PUBLIC_API_URL=${{tradygo-api.RAILWAY_PUBLIC_DOMAIN}}
+  PORT=${{PORT}}
+  ```
 
-```bash
-# Extract deployment package
-cd /opt/tradygo
-tar -xzf /root/tradygo-deploy.tar.gz --strip-components=1
+#### Customer Web Store
+- **Service Name**: `tradygo-web`
+- **Root Directory**: `/apps/web`
+- **Environment Variables**:
+  ```env
+  NODE_ENV=production
+  NEXT_PUBLIC_API_URL=${{tradygo-api.RAILWAY_PUBLIC_DOMAIN}}
+  PORT=${{PORT}}
+  ```
 
-# Build and start services
-docker compose build --no-cache
-docker compose up -d
-```
+### 5. Configure Custom Domains (Optional)
 
-### 🌐 DNS Configuration
+1. Go to each service's "Settings" tab
+2. Click "Domains"
+3. Add your custom domain
+4. Update DNS records as instructed
 
-**Point these domains to your VPS IP (195.35.21.175):**
+## Environment Variables Reference
 
-- `admin.tradygo.in` → `195.35.21.175`
-- `api.tradygo.in` → `195.35.21.175`
+### Required for API
+- `DATABASE_URL`: PostgreSQL connection string
+- `JWT_ACCESS_SECRET`: Secret for JWT access tokens
+- `JWT_REFRESH_SECRET`: Secret for JWT refresh tokens
+- `NODE_ENV`: Set to `production`
 
-### ✅ Verification
+### Required for Frontend Apps
+- `NEXT_PUBLIC_API_URL`: URL of your deployed API service
+- `NODE_ENV`: Set to `production`
 
-**Check deployment status:**
+### Optional
+- `CORS_ORIGINS`: Comma-separated list of allowed origins
+- `UPLOAD_MAX_SIZE`: Maximum file upload size
+- `REDIS_URL`: Redis connection string (for caching)
 
-```bash
-# Check containers
-docker compose ps
+## Database Migration
 
-# Check logs
-docker compose logs -f
+After deploying the API service:
 
-# Test services
-curl http://localhost:3001/health
-curl http://localhost:3000
-```
+1. Go to your API service in Railway
+2. Open the "Deployments" tab
+3. Click on the latest deployment
+4. Open the "Deploy Logs" to verify Prisma migrations ran successfully
 
-### 🎯 Access URLs
+If migrations didn't run automatically, you can trigger them manually:
 
-**After DNS propagation:**
-
-- **Admin Panel:** https://admin.tradygo.in
-- **API:** https://api.tradygo.in
-
-### 🔐 Default Credentials
-
-**Admin Login:**
-- Email: `admin@tradygo.in`
-- Password: `Admin@12345!`
-
-### 🛠️ Manual Deployment (Alternative)
-
-If automated script fails, follow these manual steps:
-
-**1. Install Dependencies**
-```bash
-apt update && apt upgrade -y
-apt install -y docker.io docker-compose-plugin
-systemctl start docker && systemctl enable docker
-```
-
-**2. Create Deployment Directory**
-```bash
-mkdir -p /opt/tradygo
-cd /opt/tradygo
-```
-
-**3. Copy Configuration Files**
-```bash
-# Copy from deploy/ directory
-cp -r /path/to/deploy/* .
-```
-
-**4. Build and Start**
-```bash
-docker compose build --no-cache
-docker compose up -d
-```
-
-### 🔍 Troubleshooting
-
-**Common Issues:**
-
-1. **Docker build fails:**
+1. Go to your API service settings
+2. Add a "Deploy Hook" or use Railway CLI:
    ```bash
-   docker system prune -a
-   docker compose build --no-cache
+   railway run npx prisma migrate deploy
    ```
 
-2. **Services won't start:**
-   ```bash
-   docker compose logs api
-   docker compose logs admin
-   docker compose logs db
-   ```
+## Monitoring and Logs
 
-3. **Database connection issues:**
-   ```bash
-   docker compose exec db psql -U trg_app -d trgdb
-   ```
+- **Logs**: View real-time logs in each service's "Deployments" tab
+- **Metrics**: Monitor CPU, memory, and network usage in the "Metrics" tab
+- **Health Checks**: Railway automatically monitors your services
 
-4. **SSL certificate issues:**
-   ```bash
-   docker compose logs caddy
-   ```
+## Scaling
 
-### 📊 Monitoring
+- Railway automatically scales based on traffic
+- For high-traffic applications, consider upgrading to Railway Pro
+- Monitor resource usage and adjust as needed
 
-**Check system resources:**
-```bash
-docker stats
-df -h
-free -h
-```
+## Troubleshooting
 
-**View application logs:**
-```bash
-docker compose logs -f api
-docker compose logs -f admin
-```
+### Common Issues
 
-### 🔄 Updates
+1. **Build Failures**
+   - Check build logs for specific errors
+   - Ensure all dependencies are listed in package.json
+   - Verify build commands are correct
 
-**To update the application:**
-```bash
-cd /opt/tradygo
-git pull origin main  # if using git
-docker compose build --no-cache
-docker compose up -d
-```
+2. **Database Connection Issues**
+   - Verify DATABASE_URL is correctly set
+   - Check if Prisma migrations completed
+   - Ensure PostgreSQL service is running
 
-### 🆘 Support
+3. **CORS Errors**
+   - Add frontend domains to CORS_ORIGINS
+   - Verify API URLs in frontend environment variables
 
-**If you encounter issues:**
+4. **Environment Variable Issues**
+   - Double-check all required variables are set
+   - Ensure Railway variable references are correct (e.g., `${{Postgres.DATABASE_URL}}`)
 
-1. Check container logs: `docker compose logs`
-2. Verify DNS settings
-3. Ensure firewall allows ports 80, 443
-4. Check VPS provider security groups
+### Getting Help
+
+- Railway Documentation: https://docs.railway.app
+- Railway Discord: https://discord.gg/railway
+- GitHub Issues: Create an issue in your repository
+
+## Security Considerations
+
+1. **Environment Variables**: Never commit secrets to your repository
+2. **JWT Secrets**: Use strong, unique secrets for production
+3. **Database**: Railway PostgreSQL is automatically secured
+4. **HTTPS**: Railway provides HTTPS by default
+5. **CORS**: Configure appropriate CORS origins
+
+## Cost Optimization
+
+- Railway offers a generous free tier
+- Monitor usage in the Railway dashboard
+- Consider combining services if traffic is low
+- Use Railway's sleep feature for development environments
+
+## Backup Strategy
+
+1. **Database Backups**: Railway automatically backs up PostgreSQL
+2. **Code Backups**: Your code is backed up in GitHub
+3. **Environment Variables**: Document all variables securely
 
 ---
 
-## 🎉 Deployment Complete!
-
-Your TradyGo platform should now be running in production with:
-
-- ✅ HTTPS auto-certificates via Caddy
-- ✅ PostgreSQL database
-- ✅ NestJS API backend
-- ✅ Next.js admin frontend
-- ✅ Production-ready configuration
-- ✅ Automatic restarts
-- ✅ Secure environment variables
-
-**Access your admin panel at: https://admin.tradygo.in**
+**Need Help?** 
+If you encounter any issues during deployment, please check the troubleshooting section above or reach out for support.

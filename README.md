@@ -88,7 +88,7 @@ tradygo/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/tradygo/platform.git
+   git clone https://github.com/vijaysinghrajput/tradygo.git
    cd tradygo
    ```
 
@@ -135,53 +135,46 @@ tradygo/
 - **MailHog (Email Testing):** http://localhost:8025
 - **MinIO Console:** http://localhost:9001
 
-## 🌐 Production Deployment
+## 🌐 Railway Deployment
 
-### VPS Setup (Ubuntu 24.04)
+### Quick Railway Deploy
 
-1. **Bootstrap the server:**
-   ```bash
-   ./scripts/bootstrap.sh
-   ```
+This project is optimized for deployment on Railway:
 
-2. **Configure DNS records:**
-   Point the following domains to your server IP (195.35.21.175):
-   - tradygo.in
-   - www.tradygo.in
-   - api.tradygo.in
-   - admin.tradygo.in
-   - seller.tradygo.in
-   - files.tradygo.in
-   - cdn.tradygo.in
-   - webhook.tradygo.in
-   - monitor.tradygo.in
+1. **Fork this repository**
+   - Fork the repository to your GitHub account
 
-3. **Set up SSL certificates:**
-   ```bash
-   ./scripts/setup-ssl.sh
-   ```
+2. **Connect to Railway:**
+   - Sign up at [Railway](https://railway.app)
+   - Connect your GitHub account
+   - Create a new project from your forked repository
 
-4. **Deploy the application:**
-   ```bash
-   ./scripts/deploy.sh
-   ```
+3. **Add PostgreSQL database:**
+   - Add a PostgreSQL service to your Railway project
+   - Note the database connection details
+
+4. **Deploy services separately:**
+   Deploy each service as a separate Railway service:
+   - API Server (`apps/api`)
+   - Admin Dashboard (`apps/admin`)
+   - Seller Portal (`apps/seller`)
+   - Customer Web (`apps/web`)
+
+5. **Configure environment variables:**
+   Set up the required environment variables for each service
 
 ### Environment Configuration
 
-Copy and configure the production environment:
+Key environment variables for Railway deployment:
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - JWT signing secret
+- `NEXTAUTH_SECRET` - NextAuth.js secret
+- `RAZORPAY_KEY_ID` & `RAZORPAY_KEY_SECRET` - Payment gateway
+- `STRIPE_SECRET_KEY` - Stripe payment processing
+- `EMAIL_*` - Email service configuration
+- `CLOUDINARY_*` - File storage credentials
 
-```bash
-cp env/.prod.example env/.prod
-# Edit env/.prod with your production values
-```
-
-Key environment variables:
-- Database credentials
-- JWT secrets
-- Payment gateway keys (Razorpay, Stripe)
-- Email service configuration
-- S3/MinIO credentials
-- Monitoring and logging settings
+For detailed deployment instructions, see [DEPLOY_INSTRUCTIONS.md](./DEPLOY_INSTRUCTIONS.md).
 
 ## 📊 Monitoring
 
