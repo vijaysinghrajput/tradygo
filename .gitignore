@@ -215,6 +215,12 @@ docker-compose.override.yml
 yarn.lock
 package-lock.json
 
+# Archive files
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
 # Test results
 junit.xml
 test-results/
