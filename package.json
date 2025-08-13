@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "TradyGo - Multivendor E-commerce Platform",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "start": "turbo run start",
-    "build": "turbo run build",
+    "postinstall": "prisma generate",
+    "build": "pnpm -r build",
+    "migrate:deploy": "prisma migrate deploy",
+    "start": "node apps/api/dist/main.js",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
