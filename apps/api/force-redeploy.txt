@@ -1,0 +1,8 @@
+Force Railway redeploy to fix database connection error
+
+Issue: PrismaClientInitializationError - Can't reach database server at hopper.proxy.rlwy.net:50471
+Solution: Ensure DATABASE_URL uses internal Railway network: ${{Postgres.DATABASE_URL}}
+
+Timestamp: 2025-01-13 17:35:00
+Reason: Database connection failing - need to use internal Railway PostgreSQL connection
+Status: Triggering redeploy with correct environment variables
