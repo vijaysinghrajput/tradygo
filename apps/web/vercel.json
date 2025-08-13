@@ -1,6 +1,7 @@
 {
   "name": "tradygo-web",
   "version": 2,
+  "rootDirectory": "apps/web",
   "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @tradygo/ui build && cd apps/web && pnpm run build",
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",

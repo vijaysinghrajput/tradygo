@@ -1,17 +1,11 @@
-# Ignore everything except what's needed for the build
-*
-!src/
-!public/
-!package.json
-!pnpm-lock.yaml
-!pnpm-workspace.yaml
-!next.config.js
-!postcss.config.js
-!tailwind.config.js
-!tsconfig.json
-!vercel.json
-!packages/
-!apps/
-!.gitignore
-!README.md
-!turbo.json
+# Ignore unnecessary files but allow essential build files
+node_modules/
+.git/
+.next/
+.env.local
+.env.production
+.env.railway
+.env.railway.example
+*.log
+.DS_Store
+Thumbs.db
