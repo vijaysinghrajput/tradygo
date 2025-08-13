@@ -12,3 +12,6 @@
 !vercel.json
 !packages/
 !apps/
+!.gitignore
+!README.md
+!turbo.json
