@@ -1,6 +1,6 @@
 // Client-side API utility
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api/v1';
 
 interface ApiRequestConfig {
   headers?: Record<string, string>;

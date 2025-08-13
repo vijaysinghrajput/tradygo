@@ -40,7 +40,7 @@ class ConfigService {
   private configPromise: Promise<PublicConfig> | null = null;
 
   private async fetchConfig(): Promise<PublicConfig> {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://api.tradygo.in';
     
     try {
       const response = await fetch(`${apiBase}/api/v1/public/config`, {
