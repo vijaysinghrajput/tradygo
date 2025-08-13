@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
-import { generateMetadata as generateSEOMetadata } from '@/lib/seo';
+import { ForgotPasswordForm } from '../../components/auth/forgot-password-form';
+import { generateMetadata as generateSEOMetadata } from '../../lib/seo';
 
 export const metadata: Metadata = generateSEOMetadata({
   title: 'Forgot Password',
