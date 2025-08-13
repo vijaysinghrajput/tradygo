@@ -12,7 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": []
   },
   "include": ["src/**/*", "stories/**/*"],
   "exclude": ["dist", "build", "node_modules"]
