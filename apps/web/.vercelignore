@@ -3,8 +3,12 @@
 !src/
 !public/
 !package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
 !next.config.js
 !postcss.config.js
 !tailwind.config.js
 !tsconfig.json
 !vercel.json
+!packages/
+!apps/
