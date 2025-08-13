@@ -1,0 +1,71 @@
+{
+  "railway_environment_variables": {
+    "NIXPACKS_NODE_VERSION": "20",
+    "DATABASE_URL": "postgresql://postgres:HfDAIBrIsYepQfrLNxbwDYkrxOJTLJmt@hopper.proxy.rlwy.net:50471/railway?sslmode=require&pgbouncer=true&connection_limit=3",
+    "DIRECT_URL": "postgresql://postgres:HfDAIBrIsYepQfrLNxbwDYkrxOJTLJmt@${RAILWAY_PRIVATE_DOMAIN}:5432/railway?sslmode=require",
+    "JWT_SECRET": "tradygo-super-secret-jwt-key-production-2024-change-this-make-it-very-long-and-random-555666777888999",
+    "JWT_REFRESH_SECRET": "tradygo-super-secret-jwt-refresh-key-production-2024-change-this-make-it-very-long-and-random-987654321fedcba",
+    "JWT_ACCESS_SECRET": "tradygo-super-secret-jwt-access-key-production-2024-change-this-make-it-very-long-and-random-123456789abcdef",
+    "NODE_ENV": "production",
+    "PORT": "${{PORT}}",
+    "CORS_ORIGINS": "https://admin.tradygo.in,https://seller.tradygo.in,https://tradygo.in",
+    "PRISMA_POOL_TIMEOUT": "30",
+    "PRISMA_CLIENT_ENGINE_TYPE": "library"
+  },
+  "railway_start_command": "pnpm prisma migrate deploy && pnpm start",
+  "vercel_environment_variables": {
+    "admin_app": {
+      "NEXT_PUBLIC_API_URL": "https://api.tradygo.in/api/v1",
+      "NEXT_PUBLIC_API_BASE": "https://api.tradygo.in",
+      "NODE_ENV": "production"
+    },
+    "seller_app": {
+      "NEXT_PUBLIC_API_URL": "https://api.tradygo.in/api/v1",
+      "NODE_ENV": "production"
+    },
+    "web_app": {
+      "NEXT_PUBLIC_API_URL": "https://api.tradygo.in/api/v1",
+      "NODE_ENV": "production"
+    }
+  },
+  "production_urls": {
+    "api": "https://api.tradygo.in/",
+    "health_check": "https://api.tradygo.in/api/v1/health/healthz",
+    "api_docs": "https://api.tradygo.in/api/docs",
+    "admin_panel": "https://admin.tradygo.in/",
+    "seller_portal": "https://seller.tradygo.in/",
+    "main_website": "https://tradygo.in/"
+  },
+  "demo_credentials": {
+    "super_admin": {
+      "email": "sa@tradygo.in",
+      "password": "Admin@12345!"
+    },
+    "admin": {
+      "email": "admin@tradygo.in",
+      "password": "Admin@12345!"
+    }
+  },
+  "database_configuration": {
+    "connection_type": "pooled_proxy_with_ssl",
+    "connection_limit": 3,
+    "ssl_mode": "require",
+    "pgbouncer": true,
+    "pool_timeout": 30,
+    "engine_type": "library"
+  },
+  "deployment_instructions": {
+    "step_1": "Copy railway_environment_variables to Railway Dashboard → API Service → Variables",
+    "step_2": "Set railway_start_command in Railway Dashboard → API Service → Settings → Start Command",
+    "step_3": "Remove SHADOW_DATABASE_URL from Railway variables completely",
+    "step_4": "Add vercel_environment_variables to respective Vercel apps",
+    "step_5": "Test health_check URL to verify deployment"
+  },
+  "expected_results": {
+    "database_connections": "Maximum 3 concurrent connections (not 97)",
+    "ssl_encryption": "All database connections encrypted",
+    "connection_pooling": "PgBouncer enabled for efficient pooling",
+    "error_resolution": "P1001 and connection flood errors resolved",
+    "api_status": "Fully operational with health checks passing"
+  }
+}
