@@ -10,6 +10,7 @@
     "runtime": "V2",
     "numReplicas": 1,
     "startCommand": "cd apps/api && pnpm start",
+    "buildCommand": "cd apps/api && pnpm build",
     "sleepApplication": false,
     "multiRegionConfig": {
       "asia-southeast1-eqsg3a": {

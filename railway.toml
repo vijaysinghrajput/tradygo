@@ -4,6 +4,7 @@ watchPatterns = ["apps/api/**"]
 
 [deploy]
 startCommand = "cd apps/api && pnpm start"
+buildCommand = "cd apps/api && pnpm build"
 restartPolicyType = "ON_FAILURE"
 numReplicas = 1
 
