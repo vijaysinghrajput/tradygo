@@ -736,6 +736,12 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.11.8
         version: 8.21.3(react-dom@19.1.1(react@18.3.1))(react@18.3.1)
+      '@types/react':
+        specifier: ^18.2.61
+        version: 18.3.23
+      '@types/react-dom':
+        specifier: ^18.2.19
+        version: 18.3.7(@types/react@18.3.23)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -748,6 +754,9 @@ importers:
       next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@15.4.6(react-dom@19.1.1(react@18.3.1))(react@18.3.1))(react-dom@19.1.1(react@18.3.1))(react@18.3.1)
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
       react-hook-form:
         specifier: ^7.49.3
         version: 7.62.0(react@18.3.1)
@@ -767,18 +776,9 @@ importers:
       '@types/node':
         specifier: ^20.11.24
         version: 20.19.10
-      '@types/react':
-        specifier: ^18.2.61
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.2.19
-        version: 18.3.7(@types/react@18.3.23)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
-      react:
-        specifier: ^18.2.0
-        version: 18.3.1
       tsup:
         specifier: ^8.0.2
         version: 8.5.0(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.1)
