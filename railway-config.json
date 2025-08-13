@@ -1,8 +1,8 @@
 {
   "railway_environment_variables": {
     "NIXPACKS_NODE_VERSION": "20",
-    "DATABASE_URL": "postgresql://postgres:HfDAIBrIsYepQfrLNxbwDYkrxOJTLJmt@hopper.proxy.rlwy.net:50471/railway?sslmode=require&pgbouncer=true&connection_limit=3",
-    "DIRECT_URL": "postgresql://postgres:HfDAIBrIsYepQfrLNxbwDYkrxOJTLJmt@${RAILWAY_PRIVATE_DOMAIN}:5432/railway?sslmode=require",
+    "DATABASE_URL": "postgresql://${PGUSER}:${POSTGRES_PASSWORD}@${RAILWAY_PRIVATE_DOMAIN}:5432/${PGDATABASE}",
+    "DIRECT_URL": "postgresql://${PGUSER}:${POSTGRES_PASSWORD}@${RAILWAY_PRIVATE_DOMAIN}:5432/${PGDATABASE}",
     "JWT_SECRET": "tradygo-super-secret-jwt-key-production-2024-change-this-make-it-very-long-and-random-555666777888999",
     "JWT_REFRESH_SECRET": "tradygo-super-secret-jwt-refresh-key-production-2024-change-this-make-it-very-long-and-random-987654321fedcba",
     "JWT_ACCESS_SECRET": "tradygo-super-secret-jwt-access-key-production-2024-change-this-make-it-very-long-and-random-123456789abcdef",
