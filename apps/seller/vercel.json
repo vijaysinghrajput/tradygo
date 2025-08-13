@@ -1,7 +1,6 @@
 {
   "name": "tradygo-seller",
   "version": 2,
-  "projectId": "prj_60iKFIUY9vXZxniNylO8S2udiPSA",
   "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @tradygo/ui build && pnpm run build",
   "outputDirectory": ".next",
   "installCommand": "pnpm install --frozen-lockfile",
