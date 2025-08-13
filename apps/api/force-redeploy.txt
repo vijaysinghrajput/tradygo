@@ -1,0 +1,23 @@
+```
+URGENT: Force Railway redeploy - DUPLICATE ENGINES FIELD FIXED
+
+Issue: Railway still using cached package.json with duplicate engines field
+Error: duplicate field `engines` at line 48 column 11
+Solution: Force Railway to use latest commit acee3e8 with fixed package.json
+
+Timestamp: 2025-01-13 17:45:00
+Reason: Railway cache issue - not picking up latest code with engines field fix
+Status: CRITICAL - Manual redeploy required to use fixed package.json
+Commit: acee3e8 - FIX: Remove duplicate engines field in package.json
+
+FIXED IN CODE:
+- Removed duplicate engines field at bottom of package.json
+- Kept single engines field with node: 20.x
+- JSON is now valid and parseable
+
+RAILWAY ACTION NEEDED:
+- Go to Railway Dashboard
+- Force manual redeploy
+- Select latest commit acee3e8
+- Clear build cache if available
+```
