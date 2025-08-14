@@ -1,12 +1,17 @@
 [build]
-builder = "NIXPACKS"
-watchPatterns = ["apps/api/**"]
+builder = "nixpacks"
+watchPatterns = ["apps/api/**", "packages/**", "prisma/**"]
 
 [deploy]
-startCommand = "cd apps/api && pnpm start"
-buildCommand = "cd apps/api && pnpm build"
-restartPolicyType = "ON_FAILURE"
-numReplicas = 1
+startCommand = "./scripts/railway-deploy.sh"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
 
-[environments.production]
-variables = { NODE_ENV = "production", PORT = "3001" }
+[environments.production.variables]
+NODE_ENV = "production"
+NIXPACKS_NODE_VERSION = "20"
+PRISMA_POOL_TIMEOUT = "30"
+PRISMA_CLIENT_ENGINE_TYPE = "library"
+
+[environments.production.deploy]
+startCommand = "./scripts/railway-deploy.sh"
