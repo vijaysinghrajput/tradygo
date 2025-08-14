@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpStatus,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -19,6 +20,7 @@ export class AppConfigController {
   constructor(private appConfigService: AppConfigService) {}
 
   @Get('public/config')
+  @SkipThrottle()
   async getPublicConfig(
     @Headers('if-none-match') ifNoneMatch: string,
     @Res() res: Response,

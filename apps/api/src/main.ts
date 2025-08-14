@@ -52,6 +52,9 @@ async function bootstrap() {
     }),
   );
 
+  // Trust proxy in local dev when behind proxies
+  app.set('trust proxy', 1);
+
   // Global prefix
   app.setGlobalPrefix('api/v1');
 
