@@ -41,7 +41,7 @@ class ConfigService {
 
   private async fetchConfig(): Promise<PublicConfig> {
     // Normalize API base to ensure it ends with /api/v1 exactly once
-    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
     const normalized = (rawApiBase || '').replace(/\/+$/, '');
     const apiBase = normalized.endsWith('/api/v1') ? normalized : `${normalized}/api/v1`;
     

@@ -52,8 +52,14 @@ async function bootstrap() {
     }),
   );
 
-  // Trust proxy in local dev when behind proxies
-  app.set('trust proxy', 1);
+  // Trust proxy (express) in dev so cookies and IPs work correctly behind proxies
+  try {
+    const httpAdapter = app.getHttpAdapter();
+    const instance: any = httpAdapter.getInstance?.();
+    if (instance?.set) {
+      instance.set('trust proxy', 1);
+    }
+  } catch {}
 
   // Global prefix
   app.setGlobalPrefix('api/v1');
