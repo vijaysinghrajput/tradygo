@@ -88,14 +88,12 @@ async function tryRefreshToken(request: NextRequest): Promise<{ success: boolean
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  // In development, bypass auth middleware entirely to avoid redirect loops while testing
-  if (process.env.NODE_ENV !== 'production') {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-pathname', pathname);
-    return NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-  }
+  // Keep bypass in dev to make it dead simple during development
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', pathname);
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
   
   // Add pathname to headers for layout detection
   const requestHeaders = new Headers(request.headers);

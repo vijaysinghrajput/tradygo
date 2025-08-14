@@ -74,6 +74,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @SkipThrottle()
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
@@ -85,6 +86,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @SkipThrottle()
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
