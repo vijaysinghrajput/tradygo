@@ -20,6 +20,8 @@ async function main() {
   // Hash passwords for demo users
   const superAdminPassword = await bcrypt.hash('Admin@12345!', bcryptRounds);
   const adminPassword = await bcrypt.hash('Admin@12345!', bcryptRounds);
+  const sellerPassword = await bcrypt.hash('Seller@12345!', bcryptRounds);
+  const customerPassword = await bcrypt.hash('User@12345!', bcryptRounds);
 
   // Create or update users
   console.log('👤 Creating/updating users...');
@@ -54,7 +56,37 @@ async function main() {
     },
   });
 
-  console.log(`✅ Created/updated users: ${superAdmin.email}, ${admin.email}`);
+  const seller = await prisma.user.upsert({
+    where: { email: 'seller@tradygo.in' },
+    update: {
+      passwordHash: sellerPassword,
+      role: 'SELLER',
+      status: 'ACTIVE',
+    },
+    create: {
+      email: 'seller@tradygo.in',
+      passwordHash: sellerPassword,
+      role: 'SELLER',
+      status: 'ACTIVE',
+    },
+  });
+
+  const customer = await prisma.user.upsert({
+    where: { email: 'user@tradygo.in' },
+    update: {
+      passwordHash: customerPassword,
+      role: 'CUSTOMER',
+      status: 'ACTIVE',
+    },
+    create: {
+      email: 'user@tradygo.in',
+      passwordHash: customerPassword,
+      role: 'CUSTOMER',
+      status: 'ACTIVE',
+    },
+  });
+
+  console.log(`✅ Created/updated users: ${superAdmin.email}, ${admin.email}, ${seller.email}, ${customer.email}`);
 
   // Create or update platform config (singleton)
   console.log('⚙️ Creating/updating platform configuration...');
@@ -101,6 +133,18 @@ async function main() {
       email: 'admin@tradygo.in',
       passwordPlaintext: 'Admin@12345!',
       role: 'ADMIN' as const,
+    },
+    {
+      label: 'Seller',
+      email: 'seller@tradygo.in',
+      passwordPlaintext: 'Seller@12345!',
+      role: 'SELLER' as const,
+    },
+    {
+      label: 'Customer',
+      email: 'user@tradygo.in',
+      passwordPlaintext: 'User@12345!',
+      role: 'CUSTOMER' as const,
     },
   ];
 
