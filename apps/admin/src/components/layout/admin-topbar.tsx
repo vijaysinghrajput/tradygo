@@ -189,13 +189,18 @@ export function AdminTopbar({ onMenuClick }: AdminTopbarProps) {
                   Settings
                 </Link>
                 <hr className="my-1" />
-                <Link
-                  href="/api/auth/logout"
+                <button
                   className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={async () => {
+                    try {
+                      await fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' });
+                    } catch {}
+                    window.location.href = '/login';
+                  }}
                 >
                   <LogOut className="mr-3 h-4 w-4" />
                   Sign out
-                </Link>
+                </button>
               </div>
             </div>
           )}

@@ -16,6 +16,16 @@ export function AdminHeader({ onToggleSidebar, sidebarCollapsed }: AdminHeaderPr
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' });
+    } catch (e) {
+      // ignore
+    } finally {
+      window.location.href = '/login';
+    }
+  }
+
   const notifications = [
     { id: 1, title: 'New order received', message: 'Order #12345 from John Doe', time: '2 min ago', unread: true },
     { id: 2, title: 'Low stock alert', message: 'iPhone 15 Pro has only 5 units left', time: '1 hour ago', unread: true },
@@ -160,12 +170,15 @@ export function AdminHeader({ onToggleSidebar, sidebarCollapsed }: AdminHeaderPr
                     Settings
                   </Button>
                   <div className="my-1 border-t" />
-                  <Link href="/api/auth/logout" className="w-full">
-                    <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-destructive">
-                      <LogOut className="h-4 w-4" />
-                      Sign out
-                    </Button>
-                  </Link>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start gap-2 text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </Button>
                 </div>
               </div>
             )}
