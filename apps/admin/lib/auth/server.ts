@@ -3,7 +3,12 @@ import { redirect } from 'next/navigation';
 import { NextResponse } from 'next/server';
 import { User, AuthTokens, isAdminRole } from './types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in/api/v1';
+// Build a versioned API base that avoids double "/api/v1"
+const RAW_API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+const NORMALIZED_API_BASE = (RAW_API_BASE || '').replace(/\/+$/, '');
+const API_BASE = NORMALIZED_API_BASE.endsWith('/api/v1')
+  ? NORMALIZED_API_BASE
+  : `${NORMALIZED_API_BASE}/api/v1`;
 
 /**
  * Get tokens from httpOnly cookies
@@ -109,7 +114,7 @@ export async function fetchMeOrNull(): Promise<User | null> {
  */
 async function fetchUserWithToken(accessToken: string): Promise<User | null> {
   try {
-    const response = await fetch(`${API_BASE}/api/v1/auth/me`, {
+    const response = await fetch(`${API_BASE}/auth/me`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',

@@ -18,8 +18,13 @@ class ApiClient {
   }> = [];
 
   constructor() {
+    // Normalize API base to ensure it ends with /api/v1 exactly once
+    const rawBase = Config.API_BASE_URL || 'https://api.tradygo.in';
+    const normalized = (rawBase || '').replace(/\/+$/, '');
+    const baseURL = normalized.endsWith('/api/v1') ? normalized : `${normalized}/api/v1`;
+
     this.instance = axios.create({
-      baseURL: Config.API_BASE_URL,
+      baseURL,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',

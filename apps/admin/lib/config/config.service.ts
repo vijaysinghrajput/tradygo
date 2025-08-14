@@ -40,10 +40,13 @@ class ConfigService {
   private configPromise: Promise<PublicConfig> | null = null;
 
   private async fetchConfig(): Promise<PublicConfig> {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://api.tradygo.in';
+    // Normalize API base to ensure it ends with /api/v1 exactly once
+    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+    const normalized = (rawApiBase || '').replace(/\/+$/, '');
+    const apiBase = normalized.endsWith('/api/v1') ? normalized : `${normalized}/api/v1`;
     
     try {
-      const response = await fetch(`${apiBase}/api/v1/public/config`, {
+      const response = await fetch(`${apiBase}/public/config`, {
         cache: 'no-store',
       });
       

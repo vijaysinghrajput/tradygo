@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { setTokensAsCookies } from '../../../../lib/auth/server';
 import { RefreshResponse } from '../../../../lib/auth/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in/api/v1';
+// Build a versioned API base that avoids double "/api/v1"
+const RAW_API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+const NORMALIZED_API_BASE = (RAW_API_BASE || '').replace(/\/+$/, '');
+const API_BASE = NORMALIZED_API_BASE.endsWith('/api/v1')
+  ? NORMALIZED_API_BASE
+  : `${NORMALIZED_API_BASE}/api/v1`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Proxy to backend API
-    const response = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
+    const response = await fetch(`${API_BASE}/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in/api/v1';
+// Build a versioned API base that avoids double "/api/v1"
+const RAW_API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
+const NORMALIZED_API_BASE = (RAW_API_BASE || '').replace(/\/+$/, '');
+const API_BASE = NORMALIZED_API_BASE.endsWith('/api/v1')
+  ? NORMALIZED_API_BASE
+  : `${NORMALIZED_API_BASE}/api/v1`;
 
 /**
  * Check if the route should be protected
@@ -22,7 +27,7 @@ function isProtectedRoute(pathname: string): boolean {
  */
 async function verifyAccessToken(token: string): Promise<{ valid: boolean; isAdmin: boolean }> {
   try {
-    const response = await fetch(`${API_BASE}/api/v1/auth/me`, {
+    const response = await fetch(`${API_BASE}/auth/me`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
