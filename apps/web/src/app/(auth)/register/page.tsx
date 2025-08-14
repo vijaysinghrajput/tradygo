@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { RegisterForm } from '../../components/auth/register-form';
-import { generateMetadata as generateSEOMetadata } from '../../lib/seo';
+import { RegisterForm } from '@/components/auth/register-form';
+import { generateMetadata as generateSEOMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = generateSEOMetadata({
   title: 'Create Account',
