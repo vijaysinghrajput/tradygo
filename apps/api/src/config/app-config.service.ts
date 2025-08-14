@@ -82,9 +82,13 @@ export class AppConfigService {
 
     // Fallback to environment variables
     const brandName = this.configService.get('PLATFORM_BRAND_NAME', 'TradyGo');
+    const assetsBase = this.configService.get('ASSETS_BASE_URL');
+    const defaultLogo = assetsBase
+      ? `${assetsBase.replace(/\/+$/, '')}/brand/admin-logo.svg`
+      : 'https://cdn.tradygo.in/brand/admin-logo.svg';
     const brandLogoUrl = this.configService.get(
       'PLATFORM_BRAND_LOGO_URL',
-      'https://cdn.tradygo.in/brand/admin-logo.svg',
+      defaultLogo,
     );
     const uiHelpUrl = this.configService.get(
       'UI_HELP_URL',

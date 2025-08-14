@@ -20,7 +20,8 @@ import {
   BarChart3,
   FileText,
   Shield,
-  Zap
+  Zap,
+  Clock,
 } from 'lucide-react';
 import { Button } from '@tradygo/ui';
 import { cn } from '@/lib/utils';
@@ -65,10 +66,12 @@ const navigation: NavItem[] = [
     title: 'Sellers',
     icon: UserCheck,
     children: [
-      { title: 'Onboarding', href: '/sellers/onboarding', icon: UserCheck, badge: '5' },
-      { title: 'Active Sellers', href: '/sellers/active', icon: Users },
-      { title: 'Payouts', href: '/sellers/payouts', icon: CreditCard },
-      { title: 'Violations', href: '/sellers/violations', icon: Shield },
+      { title: 'All Sellers', href: '/admin/vendors', icon: Users },
+      { title: 'Approval Queue', href: '/admin/vendors/queues/approvals', icon: Clock },
+      { title: 'KYC Review', href: '/admin/vendors/queues/kyc', icon: FileText },
+      { title: 'Payout Queue', href: '/admin/vendors/queues/payouts', icon: CreditCard },
+      { title: 'Analytics', href: '/admin/vendors/analytics', icon: BarChart3 },
+      { title: 'Settings', href: '/admin/vendors/settings', icon: Settings },
     ],
   },
   {

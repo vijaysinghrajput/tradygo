@@ -22,6 +22,7 @@
     "db:generate": "cd ../.. && pnpm exec prisma generate --schema=./apps/api/prisma/schema.prisma",
     "db:migrate": "cd ../.. && pnpm exec prisma migrate deploy --schema=./apps/api/prisma/schema.prisma",
     "db:seed": "cd ../.. && pnpm exec prisma db seed --schema=./apps/api/prisma/schema.prisma",
+    "db:seed:vendors": "ts-node -O '{\"module\":\"CommonJS\"}' src/seeds/seed-vendors.ts",
     "db:studio": "cd ../.. && pnpm exec prisma studio --schema=./apps/api/prisma/schema.prisma",
     "db:reset": "cd ../.. && pnpm exec prisma migrate reset --schema=./apps/api/prisma/schema.prisma"
   },
@@ -115,8 +116,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }

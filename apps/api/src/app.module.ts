@@ -17,6 +17,7 @@ import { UsersModule } from './users/users.module';
 // import { WebhooksModule } from './webhooks/webhooks.module';
 // import { AdminModule } from './admin/admin.module';
 import { HealthModule } from './health/health.module';
+import { VendorModule } from './vendors/vendor.module';
 import { AppConfigModule } from './config/app-config.module';
 
 @Module({
@@ -68,6 +69,7 @@ import { AppConfigModule } from './config/app-config.module';
     AuthModule,
     UsersModule,
     HealthModule,
+    VendorModule,
     
     // Additional modules will be added as they are implemented
     // SellersModule,

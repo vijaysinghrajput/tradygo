@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -8,7 +8,8 @@ async function main() {
 
   // Get environment variables with fallbacks
   const brandName = process.env.PLATFORM_BRAND_NAME || 'TradyGo';
-  const brandLogoUrl = process.env.PLATFORM_BRAND_LOGO_URL || 'https://cdn.tradygo.in/brand/admin-logo.svg';
+  const assetsBase = process.env.ASSETS_BASE_URL?.replace(/\/+$/, '');
+  const brandLogoUrl = process.env.PLATFORM_BRAND_LOGO_URL || (assetsBase ? `${assetsBase}/brand/admin-logo.svg` : 'https://cdn.tradygo.in/brand/admin-logo.svg');
   const uiHelpUrl = process.env.UI_HELP_URL || 'https://docs.tradygo.in/admin';
   const authAdminRoles = JSON.parse(process.env.AUTH_ADMIN_ROLES_JSON || '["ADMIN","SUPER_ADMIN"]');
   const authOtpEnabled = process.env.AUTH_OTP_ENABLED === '1';
@@ -178,6 +179,26 @@ async function main() {
   console.log(`   Show Demo Creds: ${uiShowDemoCreds}`);
   console.log(`   Admin Redirect: ${defaultRedirectAdmin}`);
   console.log(`   Seller Redirect: ${defaultRedirectSeller}`);
+
+  // Seed demo vendors
+  console.log('🏪 Seeding demo vendors...');
+  const v1 = await prisma.vendor.upsert({
+    where: { email: 'acme@vendors.test' },
+    update: {},
+    create: { name: 'Acme Traders', legalName: 'Acme Traders Pvt Ltd', email: 'acme@vendors.test', phone: '9000000001', status: 'ACTIVE' as any },
+  });
+  await prisma.vendorAddress.create({ data: { vendorId: v1.id, line1: '12 Main St', city: 'Mumbai', state: 'MH', postalCode: '400001', country: 'India', isDefault: true } });
+  await prisma.vendorBankAccount.create({ data: { vendorId: v1.id, accountHolder: 'Acme Traders', accountNumber: '1234567890', ifsc: 'HDFC0000001', bankName: 'HDFC Bank', status: 'VERIFIED' as any } });
+  await prisma.commissionRule.create({ data: { vendorId: v1.id, type: 'PERCENTAGE', value: new Prisma.Decimal(10) } });
+
+  const v2 = await prisma.vendor.upsert({
+    where: { email: 'globex@vendors.test' },
+    update: {},
+    create: { name: 'Globex Retail', legalName: 'Globex Retail LLP', email: 'globex@vendors.test', phone: '9000000002', status: 'PENDING' as any },
+  });
+  await prisma.vendorAddress.create({ data: { vendorId: v2.id, line1: '221B Baker St', city: 'Delhi', state: 'DL', postalCode: '110001', country: 'India' } });
+
+  console.log('✅ Demo vendors seeded:', v1.email, v2.email);
 }
 
 main()
