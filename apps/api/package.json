@@ -26,7 +26,7 @@
     "db:reset": "cd ../.. && pnpm exec prisma migrate reset --schema=./apps/api/prisma/schema.prisma"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
+    "seed": "ts-node -O {\"module\":\"CommonJS\"} apps/api/prisma/seed.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",

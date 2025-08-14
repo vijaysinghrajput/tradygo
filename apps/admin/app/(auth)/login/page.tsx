@@ -100,8 +100,12 @@ function LoginForm() {
       console.log('Login result:', result);
       if (result.success) {
         console.log('Login successful, redirecting to dashboard...');
-        // Redirect to dashboard
-        router.push('/dashboard');
+        // Force full navigation so new httpOnly cookies are present for middleware
+        if (typeof window !== 'undefined') {
+          window.location.href = '/dashboard';
+        } else {
+          router.replace('/dashboard');
+        }
       } else {
         console.log('Login failed:', result.error);
         setApiError(result.error || 'Login failed');

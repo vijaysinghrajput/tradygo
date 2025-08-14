@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'SELLER', 'CUSTOMER');
+CREATE TYPE "UserRole" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'SELLER', 'CUSTOMER');
 
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED');
@@ -8,9 +8,13 @@ CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED');
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "phone" TEXT,
     "passwordHash" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'CUSTOMER',
+    "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
     "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "refreshTokenHash" TEXT,
     "lastLoginAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -42,7 +46,7 @@ CREATE TABLE "demo_credentials" (
     "label" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "passwordPlaintext" TEXT,
-    "role" "Role" NOT NULL,
+    "role" "UserRole" NOT NULL,
     "platformConfigId" TEXT NOT NULL DEFAULT 'cfg-singleton',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
