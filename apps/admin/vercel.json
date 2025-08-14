@@ -1,9 +1,9 @@
 {
   "name": "tradygo-admin",
   "version": 2,
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @tradygo/ui build && pnpm run build",
+  "buildCommand": "pnpm install --frozen-lockfile --prod=false && pnpm --filter @tradygo/ui build && pnpm run build",
   "outputDirectory": ".next",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "pnpm install --frozen-lockfile --prod=false",
   "framework": "nextjs",
   "env": {
     "NODE_ENV": "production",
