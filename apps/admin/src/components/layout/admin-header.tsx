@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Bell, User, Settings, LogOut, Menu } from 'lucide-react';
+import Link from 'next/link';
 import { Button, Input, Avatar, Badge } from '@tradygo/ui';
 import { cn } from '@/lib/utils';
 
@@ -147,7 +148,7 @@ export function AdminHeader({ onToggleSidebar, sidebarCollapsed }: AdminHeaderPr
               <div className="absolute right-0 top-full mt-2 w-56 rounded-md border bg-popover p-1 shadow-md z-50">
                 <div className="px-3 py-2 border-b">
                   <p className="text-sm font-medium">Admin User</p>
-                  <p className="text-xs text-muted-foreground">admin@tradygo.com</p>
+                  <p className="text-xs text-muted-foreground">admin@tradygo.in</p>
                 </div>
                 <div className="py-1">
                   <Button variant="ghost" size="sm" className="w-full justify-start gap-2">
@@ -159,10 +160,12 @@ export function AdminHeader({ onToggleSidebar, sidebarCollapsed }: AdminHeaderPr
                     Settings
                   </Button>
                   <div className="my-1 border-t" />
-                  <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-destructive">
-                    <LogOut className="h-4 w-4" />
-                    Sign out
-                  </Button>
+                  <Link href="/api/auth/logout" className="w-full">
+                    <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-destructive">
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </Button>
+                  </Link>
                 </div>
               </div>
             )}
