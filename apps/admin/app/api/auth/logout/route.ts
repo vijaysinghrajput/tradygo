@@ -31,10 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create response and clear cookies
-    const response = NextResponse.json(
-      { message: 'Logged out successfully' },
-      { status: 204 }
-    );
+    const response = new NextResponse(null, { status: 204 });
 
     // Clear authentication cookies
     clearAuthCookies(response);
@@ -44,10 +41,7 @@ export async function POST(request: NextRequest) {
     console.error('Logout API error:', error);
     
     // Even on error, clear cookies and return success
-    const response = NextResponse.json(
-      { message: 'Logged out successfully' },
-      { status: 204 }
-    );
+    const response = new NextResponse(null, { status: 204 });
     
     clearAuthCookies(response);
     return response;
