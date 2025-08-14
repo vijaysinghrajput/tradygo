@@ -57,28 +57,33 @@ print_status "Generating Prisma client..."
 pnpm run db:generate
 print_success "Prisma client generated"
 
-# Run migrations
+# Run migrations with P3005 error handling
 print_status "Running database migrations..."
-pnpm run db:migrate
-print_success "Migrations completed"
-
-# Check and seed data
-print_status "Checking vendor data..."
-VENDOR_CHECK=$(node -e "
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-prisma.vendor.count()
-  .then(count => { console.log(count); return prisma.\$disconnect(); })
-  .catch(err => { console.log('0'); return prisma.\$disconnect(); });
-" 2>/dev/null || echo "0")
-
-if [ "$VENDOR_CHECK" = "0" ]; then
-    print_status "Seeding vendor data..."
-    pnpm run db:seed:vendors
-    print_success "Vendor data seeded"
+if ! pnpm run db:migrate 2>/dev/null; then
+    print_warning "Migration failed - checking for P3005 (non-empty database)"
+    
+    # Check if it's a P3005 error (database not empty)
+    if pnpm run db:migrate 2>&1 | grep -q "P3005\|database schema is not empty"; then
+        print_status "P3005 detected - running baseline migration for existing database"
+        cd ../..
+        ./scripts/baseline-production.sh
+        cd apps/api
+        print_success "Baseline migration completed"
+    else
+        print_error "Migration failed with unknown error"
+        pnpm run db:migrate  # Re-run to show the actual error
+        exit 1
+    fi
 else
-    print_warning "Found $VENDOR_CHECK vendors, skipping seeding"
+    print_success "Migrations completed successfully"
 fi
+
+# Smart vendor seeding
+print_status "Running smart vendor seeding..."
+cd ../..
+./scripts/smart-seed.sh
+cd apps/api
+print_success "Smart seeding completed"
 
 # Final verification
 print_status "Verifying deployment..."
