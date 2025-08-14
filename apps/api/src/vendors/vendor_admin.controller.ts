@@ -25,8 +25,6 @@ import {
   CreateIssueDto,
   UpdateIssueDto,
 } from './dto/vendor.dto';
-import { Body as ReqBody } from '@nestjs/common';
-import { VendorService } from './vendor.service';
 
 @ApiTags('admin/vendors')
 @ApiBearerAuth()
@@ -249,7 +247,7 @@ export class VendorAdminController {
   // Seller portal access
   @Post(':id/portal-user')
   @ApiOperation({ summary: 'Create or link seller portal user and email credentials' })
-  async createPortalUser(@Param('id') vendorId: string, @ReqBody() body: { email: string }) {
+  async createPortalUser(@Param('id') vendorId: string, @Body() body: { email: string }) {
     if (!body?.email) {
       return { message: 'Email is required' } as any;
     }
