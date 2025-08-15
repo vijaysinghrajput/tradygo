@@ -1,126 +1,111 @@
 import {
   Controller,
   Post,
-  Get,
   Body,
-  UseGuards,
-  Request,
   HttpCode,
   HttpStatus,
+  Req,
+  Res,
+  Get,
+  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ThrottlerGuard, SkipThrottle } from '@nestjs/throttler';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
-import { RolesGuard } from './roles.guard';
-import { Roles } from './roles.decorator';
-import { Role } from './token-payload.type';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { Roles } from './decorators/roles.decorator';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-@ApiTags('Authentication')
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Admin login' })
-  @ApiResponse({
-    status: 200,
-    description: 'Login successful',
-    schema: {
-      type: 'object',
-      properties: {
-        accessToken: { type: 'string' },
-        refreshToken: { type: 'string' },
-        user: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            email: { type: 'string' },
-            role: { type: 'string' },
-          },
-        },
-      },
-    },
-  })
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  @ApiResponse({ status: 403, description: 'Account suspended or access denied' })
-  @ApiResponse({ status: 429, description: 'Too many requests' })
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.login(loginDto);
+    
+    // Set cookies
+    res.cookie('tg_at', result.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+    
+    res.cookie('tg_rt', result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return {
+      success: true,
+      user: result.user,
+    };
   }
 
   @Post('refresh')
-  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh access token' })
-  @ApiResponse({
-    status: 200,
-    description: 'Token refreshed successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        accessToken: { type: 'string' },
-        refreshToken: { type: 'string' },
-      },
-    },
-  })
+  @ApiResponse({ status: 200, description: 'Token refreshed successfully' })
   @ApiResponse({ status: 401, description: 'Invalid refresh token' })
-  async refresh(@Body() refreshDto: RefreshDto) {
-    return this.authService.refresh(refreshDto);
-  }
+  async refresh(
+    @Body() refreshDto: RefreshDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.refresh(refreshDto.refreshToken);
+    
+    // Update cookies
+    res.cookie('tg_at', result.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
 
-  @Post('logout')
-  @SkipThrottle()
-  @UseGuards(AuthGuard('jwt'))
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Logout user' })
-  @ApiResponse({ status: 204, description: 'Logged out successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async logout(@Request() req) {
-    await this.authService.logout(req.user.id);
+    return {
+      success: true,
+      accessToken: result.accessToken,
+    };
   }
 
   @Get('me')
-  @SkipThrottle()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({
-    status: 200,
-    description: 'User profile retrieved successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string' },
-        email: { type: 'string' },
-        role: { type: 'string' },
-        status: { type: 'string' },
-        lastLoginAt: { type: 'string', format: 'date-time' },
-        createdAt: { type: 'string', format: 'date-time' },
-        updatedAt: { type: 'string', format: 'date-time' },
-      },
-    },
-  })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SELLER', 'CUSTOMER')
+  @ApiOperation({ summary: 'Get current user info' })
+  @ApiResponse({ status: 200, description: 'User info retrieved' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getMe(@Request() req) {
-    return this.authService.getMe(req.user.id);
+  @ApiBearerAuth()
+  async getMe(@Req() req: Request) {
+    return {
+      success: true,
+      user: req.user,
+    };
   }
 
-  // Protected admin-only route for testing RBAC
-  @Get('admin/ping')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Admin-only ping endpoint' })
-  @ApiResponse({ status: 200, description: 'Admin access confirmed' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin access required' })
-  async adminPing() {
-    return { ok: true, message: 'Admin access confirmed' };
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({ status: 200, description: 'Logout successful' })
+  async logout(@Res({ passthrough: true }) res: Response) {
+    // Clear cookies
+    res.clearCookie('tg_at');
+    res.clearCookie('tg_rt');
+    
+    return {
+      success: true,
+      message: 'Logged out successfully',
+    };
   }
 }
