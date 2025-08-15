@@ -1,13 +1,68 @@
--- CreateEnum for vendor-related enums
-CREATE TYPE "VendorStatus" AS ENUM ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED');
-CREATE TYPE "BankAccountStatus" AS ENUM ('UNVERIFIED', 'VERIFIED', 'REJECTED');
-CREATE TYPE "IssueStatus" AS ENUM ('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED');
-CREATE TYPE "StatementStatus" AS ENUM ('DRAFT', 'FINALIZED', 'PAID');
-CREATE TYPE "PayoutStatus" AS ENUM ('INITIATED', 'COMPLETED', 'FAILED');
-CREATE TYPE "CommissionType" AS ENUM ('PERCENTAGE', 'FLAT');
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'SELLER', 'CUSTOMER');
+
+-- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED');
+
+-- CreateEnum
+CREATE TYPE "AuthProviderType" AS ENUM ('EMAIL', 'PHONE', 'GOOGLE', 'FACEBOOK');
+
+-- CreateEnum
 CREATE TYPE "KYCStatus" AS ENUM ('PENDING', 'SUBMITTED', 'APPROVED', 'REJECTED');
 
--- CreateTable for vendors
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'RETURNED', 'REFUNDED');
+
+-- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED', 'REFUNDED');
+
+-- CreateEnum
+CREATE TYPE "PaymentMethod" AS ENUM ('COD', 'RAZORPAY', 'STRIPE', 'UPI', 'NETBANKING', 'WALLET');
+
+-- CreateEnum
+CREATE TYPE "ShipmentStatus" AS ENUM ('PENDING', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "CouponType" AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT', 'FREE_SHIPPING');
+
+-- CreateEnum
+CREATE TYPE "VendorStatus" AS ENUM ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "BankAccountStatus" AS ENUM ('UNVERIFIED', 'VERIFIED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "IssueStatus" AS ENUM ('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED');
+
+-- CreateEnum
+CREATE TYPE "StatementStatus" AS ENUM ('DRAFT', 'FINALIZED', 'PAID');
+
+-- CreateEnum
+CREATE TYPE "PayoutStatus" AS ENUM ('INITIATED', 'COMPLETED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "CommissionType" AS ENUM ('PERCENTAGE', 'FLAT');
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "phone" TEXT,
+    "passwordHash" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
+    "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "refreshTokenHash" TEXT,
+    "lastLoginAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "vendors" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -23,7 +78,7 @@ CREATE TABLE "vendors" (
     CONSTRAINT "vendors_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_addresses
+-- CreateTable
 CREATE TABLE "vendor_addresses" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -41,7 +96,7 @@ CREATE TABLE "vendor_addresses" (
     CONSTRAINT "vendor_addresses_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_users
+-- CreateTable
 CREATE TABLE "vendor_users" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -53,7 +108,7 @@ CREATE TABLE "vendor_users" (
     CONSTRAINT "vendor_users_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_bank_accounts
+-- CreateTable
 CREATE TABLE "vendor_bank_accounts" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -69,7 +124,7 @@ CREATE TABLE "vendor_bank_accounts" (
     CONSTRAINT "vendor_bank_accounts_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_kyc
+-- CreateTable
 CREATE TABLE "vendor_kyc" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -83,7 +138,7 @@ CREATE TABLE "vendor_kyc" (
     CONSTRAINT "vendor_kyc_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for commission_rules
+-- CreateTable
 CREATE TABLE "commission_rules" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -96,7 +151,7 @@ CREATE TABLE "commission_rules" (
     CONSTRAINT "commission_rules_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_statements
+-- CreateTable
 CREATE TABLE "vendor_statements" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -112,7 +167,7 @@ CREATE TABLE "vendor_statements" (
     CONSTRAINT "vendor_statements_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for payouts
+-- CreateTable
 CREATE TABLE "payouts" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -126,7 +181,7 @@ CREATE TABLE "payouts" (
     CONSTRAINT "payouts_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_settings
+-- CreateTable
 CREATE TABLE "vendor_settings" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -139,7 +194,7 @@ CREATE TABLE "vendor_settings" (
     CONSTRAINT "vendor_settings_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for vendor_issues
+-- CreateTable
 CREATE TABLE "vendor_issues" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
@@ -152,8 +207,57 @@ CREATE TABLE "vendor_issues" (
     CONSTRAINT "vendor_issues_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for products (if not exists)
-CREATE TABLE IF NOT EXISTS "products" (
+-- CreateTable
+CREATE TABLE "auth_providers" (
+    "id" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "passwordHash" TEXT,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "auth_providers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "addresses" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" TEXT,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "phone" TEXT,
+    "street" TEXT NOT NULL,
+    "addressLine" TEXT,
+    "landmark" TEXT,
+    "city" TEXT NOT NULL,
+    "state" TEXT NOT NULL,
+    "postalCode" TEXT NOT NULL,
+    "pincode" TEXT,
+    "country" TEXT NOT NULL DEFAULT 'India',
+    "isDefault" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "addresses_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "orders" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "vendorId" TEXT,
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "totalAmount" DECIMAL(10,2) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "products" (
     "id" TEXT NOT NULL,
     "vendorId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -164,35 +268,127 @@ CREATE TABLE IF NOT EXISTS "products" (
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable for orders (if not exists)
-CREATE TABLE IF NOT EXISTS "orders" (
+-- CreateTable
+CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
-    "vendorId" TEXT NOT NULL,
-    "total" DECIMAL(10,2) NOT NULL,
-    "status" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL,
+    "comment" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "platform_configs" (
+    "id" TEXT NOT NULL DEFAULT 'cfg-singleton',
+    "brandName" TEXT NOT NULL,
+    "brandLogoUrl" TEXT NOT NULL,
+    "uiHelpUrl" TEXT,
+    "authAdminRoles" JSONB NOT NULL,
+    "authOtpEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "uiShowDemoCreds" BOOLEAN NOT NULL DEFAULT false,
+    "defaultRedirectAdmin" TEXT NOT NULL DEFAULT '/dashboard',
+    "defaultRedirectSeller" TEXT NOT NULL DEFAULT '/orders',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "platform_configs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "demo_credentials" (
+    "id" TEXT NOT NULL,
+    "label" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordPlaintext" TEXT,
+    "role" "UserRole" NOT NULL,
+    "platformConfigId" TEXT NOT NULL DEFAULT 'cfg-singleton',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "demo_credentials_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE INDEX "users_role_status_idx" ON "users"("role", "status");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "vendors_email_key" ON "vendors"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "vendors_gstNumber_key" ON "vendors"("gstNumber");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "vendors_panNumber_key" ON "vendors"("panNumber");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "vendor_users_vendorId_userId_key" ON "vendor_users"("vendorId", "userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "vendor_settings_vendorId_key" ON "vendor_settings"("vendorId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "auth_providers_userId_provider_key" ON "auth_providers"("userId", "provider");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "demo_credentials_email_key" ON "demo_credentials"("email");
+
+-- CreateIndex
+CREATE INDEX "demo_credentials_role_idx" ON "demo_credentials"("role");
 
 -- AddForeignKey
 ALTER TABLE "vendor_addresses" ADD CONSTRAINT "vendor_addresses_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_users" ADD CONSTRAINT "vendor_users_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_bank_accounts" ADD CONSTRAINT "vendor_bank_accounts_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_kyc" ADD CONSTRAINT "vendor_kyc_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "commission_rules" ADD CONSTRAINT "commission_rules_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_statements" ADD CONSTRAINT "vendor_statements_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "payouts" ADD CONSTRAINT "payouts_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "payouts" ADD CONSTRAINT "payouts_statementId_fkey" FOREIGN KEY ("statementId") REFERENCES "vendor_statements"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_settings" ADD CONSTRAINT "vendor_settings_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "vendor_issues" ADD CONSTRAINT "vendor_issues_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "auth_providers" ADD CONSTRAINT "auth_providers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "orders" ADD CONSTRAINT "orders_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "demo_credentials" ADD CONSTRAINT "demo_credentials_platformConfigId_fkey" FOREIGN KEY ("platformConfigId") REFERENCES "platform_configs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
