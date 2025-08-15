@@ -41,9 +41,13 @@ class ConfigService {
 
   private async fetchConfig(): Promise<PublicConfig> {
     // Normalize API base to ensure it ends with /api/v1 exactly once
-    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
+    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
     const normalized = (rawApiBase || '').replace(/\/+$/, '');
     const apiBase = normalized.endsWith('/api/v1') ? normalized : `${normalized}/api/v1`;
+    
+    console.log('Config Service - API Base:', apiBase);
+    console.log('Config Service - Environment:', process.env.NODE_ENV);
+    console.log('Config Service - NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
     
     try {
       const response = await fetch(`${apiBase}/public/config`, {
@@ -101,51 +105,55 @@ class ConfigService {
       return this.config;
     }
 
-    if (!this.configPromise) {
-      this.configPromise = this.fetchConfig();
+    if (this.configPromise) {
+      return this.configPromise;
     }
 
+    this.configPromise = this.fetchConfig();
     this.config = await this.configPromise;
+    this.configPromise = null;
+
     return this.config;
   }
 
-  async getBranding(): Promise<AppBranding> {
-    const config = await this.getConfig();
-    return config.brand;
-  }
-
-  async getAuthConfig(): Promise<AuthConfig> {
-    const config = await this.getConfig();
-    return config.auth;
-  }
-
-  async getRedirectConfig(): Promise<RedirectConfig> {
-    const config = await this.getConfig();
-    return config.redirects;
-  }
-
-  async getUiConfig(): Promise<UiConfig> {
-    const config = await this.getConfig();
-    return config.ui;
-  }
-
-  async getDemoCredentials(): Promise<DemoCredential[]> {
-    const config = await this.getConfig();
-    return config.demo?.users || [];
-  }
-
-  async isDemoMode(): Promise<boolean> {
-    const uiConfig = await this.getUiConfig();
-    return uiConfig.showDemoCreds;
-  }
-
-  // Clear cache to force refetch
-  clearCache(): void {
+  async refreshConfig(): Promise<PublicConfig> {
     this.config = null;
     this.configPromise = null;
+    return this.getConfig();
+  }
+
+  getBranding(): AppBranding {
+    return this.config?.brand || {
+      name: 'TradyGo',
+      logoUrl: 'https://cdn.tradygo.in/brand/admin-logo.svg',
+    };
+  }
+
+  getUiConfig(): UiConfig {
+    return this.config?.ui || {
+      helpUrl: 'https://docs.tradygo.in/admin',
+      showDemoCreds: true,
+    };
+  }
+
+  getAuthConfig(): AuthConfig {
+    return this.config?.auth || {
+      allowRoles: ['ADMIN', 'SUPER_ADMIN'],
+      otpEnabled: false,
+    };
+  }
+
+  getRedirectConfig(): RedirectConfig {
+    return this.config?.redirects || {
+      admin: '/dashboard',
+      seller: '/orders',
+    };
+  }
+
+  getDemoCredentials(): DemoCredential[] {
+    return this.config?.demo?.users || [];
   }
 }
 
-// Export singleton instance
 export const configService = new ConfigService();
 export type { AppBranding, DemoCredential, AuthConfig, RedirectConfig, UiConfig, PublicConfig };
