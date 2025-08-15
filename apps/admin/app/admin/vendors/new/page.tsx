@@ -27,7 +27,7 @@ export default function NewVendorPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/admin/vendors', {
+      const response = await fetch('/api/admin/vendor-management', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

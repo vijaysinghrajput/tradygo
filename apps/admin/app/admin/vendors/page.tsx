@@ -29,7 +29,7 @@ export default function VendorsListPage() {
 
   const fetchVendors = async () => {
     try {
-      const response = await fetch('/api/admin/vendors?page=1&limit=20');
+      const response = await fetch('/api/admin/vendor-management?page=1&limit=20');
       if (!response.ok) {
         throw new Error('Failed to fetch vendors');
       }

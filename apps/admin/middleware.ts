@@ -19,6 +19,9 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
 
+  // Debug logging
+  console.log('Middleware processing:', pathname);
+
   const accessToken = request.cookies.get('tg_at')?.value;
 
   // If accessing /login and already authenticated admin, redirect to dashboard
@@ -29,12 +32,17 @@ export async function middleware(request: NextRequest) {
 
   // Skip public assets and internal auth API routes
   if (!isProtectedPath(pathname)) {
+    console.log('Skipping middleware for public path:', pathname);
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // For protected paths, require a session cookie. Do not verify via API in middleware to avoid flakiness.
-  if (!accessToken) return NextResponse.redirect(new URL('/login', request.url));
+  if (!accessToken) {
+    console.log('No access token, redirecting to login from:', pathname);
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
+  console.log('Access token found, allowing access to:', pathname);
   return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
