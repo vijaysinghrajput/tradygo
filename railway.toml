@@ -3,7 +3,7 @@ builder = "nixpacks"
 watchPatterns = ["apps/api/**", "packages/**", "prisma/**"]
 
 [deploy]
-startCommand = "./scripts/railway-deploy.sh"
+startCommand = "cd apps/api && pnpm install --frozen-lockfile && pnpm run build && pnpm start:prod"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 
@@ -14,4 +14,4 @@ PRISMA_POOL_TIMEOUT = "30"
 PRISMA_CLIENT_ENGINE_TYPE = "library"
 
 [environments.production.deploy]
-startCommand = "./scripts/railway-deploy.sh"
+startCommand = "cd apps/api && pnpm install --frozen-lockfile && pnpm run build && pnpm start:prod"

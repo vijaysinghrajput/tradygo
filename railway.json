@@ -9,8 +9,8 @@
   "deploy": {
     "runtime": "V2",
     "numReplicas": 1,
-    "startCommand": "cd apps/api && pnpm start",
-    "buildCommand": "cd apps/api && pnpm build",
+    "startCommand": "cd apps/api && pnpm install --frozen-lockfile && pnpm run build && pnpm start:prod",
+    "buildCommand": "pnpm install --frozen-lockfile",
     "sleepApplication": false,
     "multiRegionConfig": {
       "asia-southeast1-eqsg3a": {
