@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@tradygo/ui';
 import { Alert, AlertDescription } from '@tradygo/ui';
@@ -11,6 +11,12 @@ export default function NewVendorPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    console.log('NewVendorPage mounted');
+  }, []);
 
   const handleSubmit = async (formData: any) => {
     setLoading(true);
@@ -55,39 +61,91 @@ export default function NewVendorPage() {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center space-x-4">
+  // Show loading state while mounting
+  if (!mounted) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: 'white', 
+        padding: '2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  try {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: 'white', 
+        padding: '1rem',
+        position: 'relative',
+        zIndex: 1,
+        opacity: 1,
+        visibility: 'visible',
+        display: 'block'
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <Button
+              variant="ghost"
+              onClick={() => router.push('/admin/vendors')}
+              style={{ width: 'fit-content' }}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Sellers
+            </Button>
+            <div>
+              <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'black' }}>Add New Seller</h1>
+              <p style={{ color: '#666' }}>
+                Complete seller onboarding with business details, address, and banking information
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div style={{ marginBottom: '1.5rem' }}>
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </div>
+        )}
+
+        {/* Vendor Onboarding Form */}
+        <div style={{ width: '100%' }}>
+          <VendorOnboardingForm
+            onSubmit={handleSubmit}
+            loading={loading}
+            mode="create"
+          />
+        </div>
+      </div>
+    );
+  } catch (renderError) {
+    console.error('Error rendering NewVendorPage:', renderError);
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: 'white', padding: '2rem' }}>
+        <Alert variant="destructive">
+          <AlertDescription>
+            An error occurred while loading the vendor creation form. Please refresh the page or contact support.
+          </AlertDescription>
+        </Alert>
         <Button
           variant="ghost"
           onClick={() => router.push('/admin/vendors')}
-          className="flex items-center"
+          className="flex items-center mt-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Sellers
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add New Seller</h1>
-          <p className="text-muted-foreground">
-            Complete seller onboarding with business details, address, and banking information
-          </p>
-        </div>
       </div>
-
-      {/* Error Alert */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Vendor Onboarding Form */}
-      <VendorOnboardingForm
-        onSubmit={handleSubmit}
-        loading={loading}
-        mode="create"
-      />
-    </div>
-  );
+    );
+  }
 }
