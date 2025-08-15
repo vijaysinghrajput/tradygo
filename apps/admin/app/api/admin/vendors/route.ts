@@ -16,4 +16,37 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(data, { status: res.status });
 }
 
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const url = `${BASE}/admin/vendors`;
+    const accessToken = request.cookies.get('tg_at')?.value;
+    
+    if (!accessToken) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    };
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      cache: 'no-store',
+    });
+
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (error: any) {
+    console.error('Error creating vendor:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 
