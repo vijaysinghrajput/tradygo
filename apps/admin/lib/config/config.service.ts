@@ -3,13 +3,6 @@ interface AppBranding {
   logoUrl: string;
 }
 
-interface DemoCredential {
-  label: string;
-  email: string;
-  password: string;
-  role: string;
-}
-
 interface AuthConfig {
   allowRoles: string[];
   otpEnabled: boolean;
@@ -22,7 +15,6 @@ interface RedirectConfig {
 
 interface UiConfig {
   helpUrl?: string;
-  showDemoCreds: boolean;
 }
 
 interface PublicConfig {
@@ -30,24 +22,14 @@ interface PublicConfig {
   ui: UiConfig;
   auth: AuthConfig;
   redirects: RedirectConfig;
-  demo?: {
-    users: DemoCredential[];
-  };
 }
 
 class ConfigService {
   private config: PublicConfig | null = null;
-  private configPromise: Promise<PublicConfig> | null = null;
 
   private async fetchConfig(): Promise<PublicConfig> {
-    // Normalize API base to ensure it ends with /api/v1 exactly once
-    const rawApiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://api.tradygo.in';
-    const normalized = (rawApiBase || '').replace(/\/+$/, '');
-    const apiBase = normalized.endsWith('/api/v1') ? normalized : `${normalized}/api/v1`;
-    
-    console.log('Config Service - API Base:', apiBase);
-    console.log('Config Service - Environment:', process.env.NODE_ENV);
-    console.log('Config Service - NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    // Use production API URL directly - no fallbacks to localhost
+    const apiBase = 'https://api.tradygo.in/api/v1';
     
     try {
       const response = await fetch(`${apiBase}/public/config`, {
@@ -60,9 +42,9 @@ class ConfigService {
       
       return await response.json();
     } catch (error) {
-      console.error('Failed to fetch config, using defaults:', error);
+      console.error('Failed to fetch config, using production defaults:', error);
       
-      // Fallback to default configuration
+      // Production-only configuration
       return {
         brand: {
           name: 'TradyGo',
@@ -70,7 +52,6 @@ class ConfigService {
         },
         ui: {
           helpUrl: 'https://docs.tradygo.in/admin',
-          showDemoCreds: true,
         },
         auth: {
           allowRoles: ['ADMIN', 'SUPER_ADMIN'],
@@ -79,22 +60,6 @@ class ConfigService {
         redirects: {
           admin: '/dashboard',
           seller: '/orders',
-        },
-        demo: {
-          users: [
-            {
-              label: 'Super Admin',
-              email: 'sa@tradygo.in',
-              password: 'Admin@12345!',
-              role: 'SUPER_ADMIN',
-            },
-            {
-              label: 'Admin',
-              email: 'admin@tradygo.in',
-              password: 'Admin@12345!',
-              role: 'ADMIN',
-            },
-          ],
         },
       };
     }
@@ -105,20 +70,12 @@ class ConfigService {
       return this.config;
     }
 
-    if (this.configPromise) {
-      return this.configPromise;
-    }
-
-    this.configPromise = this.fetchConfig();
-    this.config = await this.configPromise;
-    this.configPromise = null;
-
+    this.config = await this.fetchConfig();
     return this.config;
   }
 
   async refreshConfig(): Promise<PublicConfig> {
     this.config = null;
-    this.configPromise = null;
     return this.getConfig();
   }
 
@@ -142,22 +99,11 @@ class ConfigService {
     return config.redirects;
   }
 
-  async getDemoCredentials(): Promise<DemoCredential[]> {
-    const config = await this.getConfig();
-    return config.demo?.users || [];
-  }
-
-  async isDemoMode(): Promise<boolean> {
-    const uiConfig = await this.getUiConfig();
-    return uiConfig.showDemoCreds;
-  }
-
   // Clear cache to force refetch
   clearCache(): void {
     this.config = null;
-    this.configPromise = null;
   }
 }
 
 export const configService = new ConfigService();
-export type { AppBranding, DemoCredential, AuthConfig, RedirectConfig, UiConfig, PublicConfig };
+export type { AppBranding, AuthConfig, RedirectConfig, UiConfig, PublicConfig };

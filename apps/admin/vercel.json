@@ -6,13 +6,11 @@
   "installCommand": "pnpm install --frozen-lockfile --prod=false",
   "framework": "nextjs",
   "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_API_URL": "https://api.tradygo.in"
+    "NODE_ENV": "production"
   },
   "build": {
     "env": {
-      "NODE_ENV": "production",
-      "NEXT_PUBLIC_API_URL": "https://api.tradygo.in"
+      "NODE_ENV": "production"
     }
   },
   "functions": {
