@@ -22,6 +22,12 @@ export async function middleware(request: NextRequest) {
   // Debug logging
   console.log('Middleware processing:', pathname);
 
+  // Temporarily disable middleware to debug routing issues
+  console.log('Middleware disabled for debugging, allowing all requests');
+  return NextResponse.next({ request: { headers: requestHeaders } });
+
+  // Original middleware logic (commented out)
+  /*
   const accessToken = request.cookies.get('tg_at')?.value;
 
   // If accessing /login and already authenticated admin, redirect to dashboard
@@ -44,6 +50,7 @@ export async function middleware(request: NextRequest) {
 
   console.log('Access token found, allowing access to:', pathname);
   return NextResponse.next({ request: { headers: requestHeaders } });
+  */
 }
 
 export const config = {
