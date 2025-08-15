@@ -43,7 +43,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   {
     title: 'Dashboard',
-    href: '/',
+    href: '/dashboard',
     icon: LayoutDashboard,
   },
   {
@@ -51,9 +51,7 @@ const navigation: NavItem[] = [
     icon: Package,
     children: [
       { title: 'Categories', href: '/catalog/categories', icon: Tag },
-      { title: 'Brands', href: '/catalog/brands', icon: Store },
       { title: 'Products', href: '/catalog/products', icon: Package },
-      { title: 'Variants', href: '/catalog/variants', icon: Package },
     ],
   },
   {
@@ -67,6 +65,7 @@ const navigation: NavItem[] = [
     icon: UserCheck,
     children: [
       { title: 'All Sellers', href: '/admin/vendors', icon: Users },
+      { title: 'New Seller', href: '/admin/vendors/new', icon: UserCheck },
       { title: 'Approval Queue', href: '/admin/vendors/queues/approvals', icon: Clock },
       { title: 'KYC Review', href: '/admin/vendors/queues/kyc', icon: FileText },
       { title: 'Payout Queue', href: '/admin/vendors/queues/payouts', icon: CreditCard },
@@ -83,40 +82,13 @@ const navigation: NavItem[] = [
     title: 'Promotions',
     icon: Megaphone,
     children: [
-      { title: 'Coupons', href: '/promotions/coupons', icon: Tag },
-      { title: 'Banners', href: '/promotions/banners', icon: FileText },
-      { title: 'Home Sections', href: '/promotions/home-sections', icon: LayoutDashboard },
+      { title: 'Banners', href: '/promotions/banners/new', icon: FileText },
     ],
   },
   {
-    title: 'Fulfillment',
-    icon: Truck,
-    children: [
-      { title: 'Shipments', href: '/fulfillment/shipments', icon: Truck },
-      { title: 'Returns', href: '/fulfillment/returns', icon: Package },
-      { title: 'RTO', href: '/fulfillment/rto', icon: Package },
-    ],
-  },
-  {
-    title: 'Finance',
-    icon: CreditCard,
-    children: [
-      { title: 'Settlements', href: '/finance/settlements', icon: CreditCard },
-      { title: 'Invoices', href: '/finance/invoices', icon: FileText },
-      { title: 'Taxes', href: '/finance/taxes', icon: BarChart3 },
-      { title: 'Refunds', href: '/finance/refunds', icon: CreditCard },
-    ],
-  },
-  {
-    title: 'Settings',
+    title: 'Admin',
+    href: '/admin',
     icon: Settings,
-    children: [
-      { title: 'Roles & Permissions', href: '/settings/roles', icon: Shield },
-      { title: 'Webhooks', href: '/settings/webhooks', icon: Zap },
-      { title: 'Integrations', href: '/settings/integrations', icon: Settings },
-      { title: 'Feature Flags', href: '/settings/features', icon: Zap },
-      { title: 'Content Pages', href: '/settings/content', icon: FileText },
-    ],
   },
 ];
 
@@ -207,7 +179,7 @@ export function AdminSidebar({ collapsed, onCollapsedChange }: AdminSidebarProps
       {/* Logo */}
       <div className="flex items-center justify-between p-4 border-b">
         {!collapsed && (
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/dashboard" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">T</span>
             </div>
