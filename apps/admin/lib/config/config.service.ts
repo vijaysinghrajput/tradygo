@@ -122,36 +122,40 @@ class ConfigService {
     return this.getConfig();
   }
 
-  getBranding(): AppBranding {
-    return this.config?.brand || {
-      name: 'TradyGo',
-      logoUrl: 'https://cdn.tradygo.in/brand/admin-logo.svg',
-    };
+  async getBranding(): Promise<AppBranding> {
+    const config = await this.getConfig();
+    return config.brand;
   }
 
-  getUiConfig(): UiConfig {
-    return this.config?.ui || {
-      helpUrl: 'https://docs.tradygo.in/admin',
-      showDemoCreds: true,
-    };
+  async getUiConfig(): Promise<UiConfig> {
+    const config = await this.getConfig();
+    return config.ui;
   }
 
-  getAuthConfig(): AuthConfig {
-    return this.config?.auth || {
-      allowRoles: ['ADMIN', 'SUPER_ADMIN'],
-      otpEnabled: false,
-    };
+  async getAuthConfig(): Promise<AuthConfig> {
+    const config = await this.getConfig();
+    return config.auth;
   }
 
-  getRedirectConfig(): RedirectConfig {
-    return this.config?.redirects || {
-      admin: '/dashboard',
-      seller: '/orders',
-    };
+  async getRedirectConfig(): Promise<RedirectConfig> {
+    const config = await this.getConfig();
+    return config.redirects;
   }
 
-  getDemoCredentials(): DemoCredential[] {
-    return this.config?.demo?.users || [];
+  async getDemoCredentials(): Promise<DemoCredential[]> {
+    const config = await this.getConfig();
+    return config.demo?.users || [];
+  }
+
+  async isDemoMode(): Promise<boolean> {
+    const uiConfig = await this.getUiConfig();
+    return uiConfig.showDemoCreds;
+  }
+
+  // Clear cache to force refetch
+  clearCache(): void {
+    this.config = null;
+    this.configPromise = null;
   }
 }
 
