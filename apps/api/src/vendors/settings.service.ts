@@ -376,4 +376,47 @@ export class SettingsService {
       throw new BadRequestException('Failed to check system health. Please ensure database is properly configured.');
     }
   }
+
+  async resolveCommissionForCategory(vendorId: string, categoryId: string): Promise<{ type: 'PERCENTAGE' | 'FLAT'; value: number }> {
+    // Load vendor default and category tree path
+    const [settings, rules, category] = await Promise.all([
+      (this.prisma as any).vendorSetting.findUnique({ where: { vendorId } }),
+      (this.prisma as any).commissionRule.findMany({ where: { vendorId } }),
+      (this.prisma as any).category.findUnique({ where: { id: categoryId } }),
+    ]);
+
+    if (!category) {
+      // fallback vendor default
+      return {
+        type: (settings?.defaultCommissionType || 'PERCENTAGE') as any,
+        value: Number(settings?.defaultCommissionValue || 0),
+      };
+    }
+
+    // Build slug path up to root
+    const pathSlugs: string[] = [];
+    let current: any = category;
+    while (current) {
+      pathSlugs.push(current.slug);
+      if (!current.parentId) break;
+      current = await (this.prisma as any).category.findUnique({ where: { id: current.parentId } });
+    }
+
+    // Try to find most specific matching rule (by category code stored in rule.category)
+    for (const slug of pathSlugs) {
+      const match = rules.find((r: any) => r.category && r.category.toLowerCase() === slug.toLowerCase());
+      if (match) return { type: match.type, value: Number(match.value) } as any;
+    }
+
+    // Fallback to category default commission if set
+    if (category.defaultCommissionValue && Number(category.defaultCommissionValue) > 0) {
+      return { type: category.defaultCommissionType, value: Number(category.defaultCommissionValue) } as any;
+    }
+
+    // Fallback to vendor default
+    return {
+      type: (settings?.defaultCommissionType || 'PERCENTAGE') as any,
+      value: Number(settings?.defaultCommissionValue || 0),
+    };
+  }
 }

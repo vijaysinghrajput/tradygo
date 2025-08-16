@@ -16,6 +16,7 @@ export const categoriesData: CategoryData[] = [
     description: 'Electronic devices and gadgets',
     sortOrder: 1,
     gstRate: 18,
+    image: 'https://cdn.tradygo.in/categories/electronics.jpg',
   },
   {
     name: 'Fashion',
@@ -23,6 +24,7 @@ export const categoriesData: CategoryData[] = [
     description: 'Clothing and accessories',
     sortOrder: 2,
     gstRate: 12,
+    image: 'https://cdn.tradygo.in/categories/fashion.jpg',
   },
   {
     name: 'Home & Kitchen',
@@ -30,6 +32,7 @@ export const categoriesData: CategoryData[] = [
     description: 'Home appliances and kitchen essentials',
     sortOrder: 3,
     gstRate: 18,
+    image: 'https://cdn.tradygo.in/categories/home-kitchen.jpg',
   },
   {
     name: 'Books',
@@ -37,6 +40,7 @@ export const categoriesData: CategoryData[] = [
     description: 'Books and educational materials',
     sortOrder: 4,
     gstRate: 5,
+    image: 'https://cdn.tradygo.in/categories/books.jpg',
   },
 
   // Level 2 - Electronics Subcategories
