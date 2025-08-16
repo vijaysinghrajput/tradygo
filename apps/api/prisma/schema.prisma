@@ -171,6 +171,7 @@ model Vendor {
   issues        VendorIssue[]
   products      Product[]
   orders        Order[]
+  categoryCommissions VendorCategoryCommission[]
 
   @@map("vendors")
 }
@@ -379,6 +380,7 @@ model Product {
   updatedAt DateTime @updatedAt
 
   vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  categories ProductCategory[]
 
   @@map("products")
 }
@@ -427,4 +429,81 @@ model DemoCredential {
 
   @@index([role])
   @@map("demo_credentials")
+}
+
+// =====================
+// Category Management
+// =====================
+
+model Category {
+  id                 String          @id @default(cuid())
+  name               String
+  slug               String          @unique
+  description        String?
+  imageUrl           String?
+  parentId           String?
+  parent             Category?       @relation("CategoryParent", fields: [parentId], references: [id])
+  children           Category[]      @relation("CategoryParent")
+  level              Int             @default(0)
+  path               String          // Store path like "parent-id/child-id/..."
+  isActive           Boolean         @default(true)
+  displayOrder       Int             @default(0)
+  
+  // Commission configuration
+  commissionType     CommissionType  @default(PERCENTAGE)
+  commissionValue    Decimal         @db.Decimal(8, 2) @default(0)
+  hasCustomCommission Boolean        @default(false) // If true, use this category's commission instead of vendor's default
+  
+  // SEO fields
+  metaTitle          String?
+  metaDescription    String?
+  metaKeywords       String?
+  
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  
+  // Relations
+  products           ProductCategory[]
+  vendorCommissions  VendorCategoryCommission[]
+  
+  @@index([parentId])
+  @@index([slug])
+  @@index([isActive])
+  @@index([level])
+  @@map("categories")
+}
+
+// Junction table for Product-Category many-to-many relationship
+model ProductCategory {
+  id          String    @id @default(cuid())
+  productId   String
+  categoryId  String
+  isPrimary   Boolean   @default(false) // Primary category for the product
+  createdAt   DateTime  @default(now())
+  
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  @@unique([productId, categoryId])
+  @@index([categoryId])
+  @@map("product_categories")
+}
+
+// Vendor-specific category commission overrides
+model VendorCategoryCommission {
+  id               String         @id @default(cuid())
+  vendorId         String
+  categoryId       String
+  commissionType   CommissionType @default(PERCENTAGE)
+  commissionValue  Decimal        @db.Decimal(8, 2)
+  isActive         Boolean        @default(true)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  
+  vendor           Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  category         Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  @@unique([vendorId, categoryId])
+  @@index([categoryId])
+  @@map("vendor_category_commissions")
 }
