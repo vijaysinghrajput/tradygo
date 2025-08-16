@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { HealthModule } from './health/health.module';
 import { AppConfigModule } from './config/app-config.module';
 import { VendorModule } from './vendors/vendor.module';
+import { CategoryModule } from './catalog/categories/category.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { VendorModule } from './vendors/vendor.module';
     HealthModule,
     AppConfigModule,
     VendorModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],

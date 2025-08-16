@@ -428,3 +428,26 @@ model DemoCredential {
   @@index([role])
   @@map("demo_credentials")
 }
+
+// ===== Added Category model =====
+model Category {
+  id                        String         @id @default(cuid())
+  name                      String
+  slug                      String         @unique
+  description               String?
+  imageUrl                  String?
+  parentId                  String?
+  sortOrder                 Int            @default(0)
+  isActive                  Boolean        @default(true)
+  defaultCommissionType     CommissionType @default(PERCENTAGE)
+  defaultCommissionValue    Decimal        @db.Decimal(8, 2) @default(0)
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+
+  parent                    Category?      @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children                  Category[]     @relation("CategoryToCategory")
+
+  @@index([parentId])
+  @@index([sortOrder])
+  @@map("categories")
+}
