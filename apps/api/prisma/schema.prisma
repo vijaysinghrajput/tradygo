@@ -370,16 +370,89 @@ model Order {
   @@map("orders")
 }
 
+// =====================
+// Category Management
+// =====================
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+model Category {
+  id              String         @id @default(cuid())
+  name            String
+  slug            String         @unique
+  description     String?
+  imageUrl        String?
+  iconUrl         String?
+  parentId        String?
+  level           Int            @default(0)
+  sortOrder       Int            @default(0)
+  status          CategoryStatus @default(ACTIVE)
+  isVisible       Boolean        @default(true)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  
+  // Commission settings
+  commissionType  CommissionType @default(PERCENTAGE)
+  commissionValue Decimal        @db.Decimal(8, 2) @default(0)
+  inheritCommission Boolean      @default(true)
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  parent          Category?      @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children        Category[]     @relation("CategoryHierarchy")
+  products        Product[]
+
+  @@index([parentId])
+  @@index([level])
+  @@index([status])
+  @@index([slug])
+  @@map("categories")
+}
+
 model Product {
-  id        String   @id @default(cuid())
-  vendorId  String
-  name      String
-  price     Decimal  @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  vendorId    String
+  categoryId  String?
+  name        String
+  slug        String   @unique
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  costPrice   Decimal? @db.Decimal(10, 2)
+  sku         String?  @unique
+  barcode     String?
+  weight      Decimal? @db.Decimal(8, 3)
+  dimensions  String?
+  
+  // Inventory
+  trackQuantity Boolean @default(true)
+  quantity     Int     @default(0)
+  lowStockAlert Int?   @default(10)
+  
+  // SEO
+  metaTitle    String?
+  metaDescription String?
+  
+  // Status
+  isActive     Boolean @default(true)
+  isFeatured   Boolean @default(false)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  vendor       Vendor   @relation(fields: [vendorId], references: [id])
+  category     Category? @relation(fields: [categoryId], references: [id])
 
+  @@index([vendorId])
+  @@index([categoryId])
+  @@index([slug])
   @@map("products")
 }
 
