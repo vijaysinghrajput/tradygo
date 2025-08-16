@@ -64,7 +64,7 @@ export class AuthController {
     @Body() refreshDto: RefreshDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.refresh(refreshDto.refreshToken);
+    const result = await this.authService.refresh(refreshDto);
     
     // Update cookies
     res.cookie('tg_at', result.accessToken, {

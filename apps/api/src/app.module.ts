@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { HealthModule } from './health/health.module';
 import { AppConfigModule } from './config/app-config.module';
-import { VendorsModule } from './vendors/vendor.module';
+import { VendorModule } from './vendors/vendor.module';
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { VendorsModule } from './vendors/vendor.module';
     UsersModule,
     HealthModule,
     AppConfigModule,
-    VendorsModule,
+    VendorModule,
   ],
   controllers: [],
   providers: [],
